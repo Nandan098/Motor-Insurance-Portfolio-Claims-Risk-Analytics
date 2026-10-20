@@ -1,0 +1,13 @@
+Vehicle_Brand,claim_count,eligible_garages,demand_share_pct,eligible_supply_share_pct,claims_per_eligible_garage
+Tata,421,7,14.03,8.43,60.14
+Mahindra,323,7,10.77,8.43,46.14
+Maruti Suzuki,804,20,26.8,24.1,40.2
+Renault,79,2,2.63,2.41,39.5
+Hyundai,588,15,19.6,18.07,39.2
+Volkswagen,71,2,2.37,2.41,35.5
+Honda,278,8,9.27,9.64,34.75
+Toyota,153,5,5.1,6.02,30.6
+Kia,203,10,6.77,12.05,20.3
+Skoda,35,2,1.17,2.41,17.5
+BMW,23,2,0.77,2.41,11.5
+Mercedes-Benz,22,3,0.73,3.61,7.33

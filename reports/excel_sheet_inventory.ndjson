@@ -1,0 +1,12 @@
+{"kind":"sheet","id":"ws/svqaag","name":"Executive_Dashboard","index":0,"range":"A1:G18","address":"A1:G18"}
+{"kind":"sheet","id":"ws/4klwq5","name":"Claims_Optimized","index":1,"range":"A1:AE3001","address":"A1:AE3001"}
+{"kind":"sheet","id":"ws/c5e06l","name":"Holdout_Evaluation","index":2,"range":"A1:L601","address":"A1:L601"}
+{"kind":"sheet","id":"ws/egw2ui","name":"Garage_Network","index":3,"range":"A1:K101","address":"A1:K101"}
+{"kind":"sheet","id":"ws/w961dm","name":"Brand_Summary","index":4,"range":"A1:F13","address":"A1:F13"}
+{"kind":"sheet","id":"ws/gwn76f","name":"Garage_Coverage","index":5,"range":"A1:H13","address":"A1:H13"}
+{"kind":"sheet","id":"ws/srpe5f","name":"Routing_Summary","index":6,"range":"A1:G13","address":"A1:G13"}
+{"kind":"sheet","id":"ws/q3ti5k","name":"Monthly_Trend","index":7,"range":"A1:D37","address":"A1:D37"}
+{"kind":"sheet","id":"ws/f6z9ou","name":"Feature_Importance","index":8,"range":"A1:B26","address":"A1:B26"}
+{"kind":"sheet","id":"ws/jubegf","name":"Model_Metrics","index":9,"range":"A1:B19","address":"A1:B19"}
+{"kind":"sheet","id":"ws/jzrijr","name":"SQL_Question_Index","index":10,"range":"A1:F56","address":"A1:F56"}
+{"kind":"sheet","id":"ws/w4cqe8","name":"Data_Dictionary","index":11,"range":"A1:E31","address":"A1:E31"}

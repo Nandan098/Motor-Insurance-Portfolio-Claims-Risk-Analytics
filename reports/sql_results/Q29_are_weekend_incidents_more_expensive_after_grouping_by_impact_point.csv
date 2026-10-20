@@ -1,0 +1,7 @@
+day_type,Impact_Point,claim_count,avg_cost_inr
+Weekday,Front,1076,19873.61
+Weekday,Side,633,18473.93
+Weekday,Rear,530,14220.38
+Weekend,Side,203,19968.97
+Weekend,Front,370,18816.49
+Weekend,Rear,188,11451.6

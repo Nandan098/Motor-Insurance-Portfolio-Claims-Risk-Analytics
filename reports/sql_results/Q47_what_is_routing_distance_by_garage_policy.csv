@@ -1,0 +1,3 @@
+Candidate_Policy,claims,avg_distance_km,avg_turnaround_days,avg_cycle_hours
+Preferred partner + brand match + parts in stock,2965,7.05,2.12,51.1
+Fallback: any brand-matched in-stock partner,35,10.97,5.0,120.44

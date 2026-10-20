@@ -1,0 +1,43 @@
+Vehicle_Brand,vehicle_age_band,claim_count,avg_cost_inr
+BMW,7-11 years,5,49400.0
+BMW,0-2 years,10,21260.0
+BMW,3-6 years,8,21175.0
+Honda,3-6 years,144,17172.22
+Honda,7-11 years,42,15245.24
+Honda,0-2 years,86,13594.19
+Honda,12+ years,6,5400.0
+Hyundai,7-11 years,97,23921.65
+Hyundai,3-6 years,312,18433.01
+Hyundai,0-2 years,166,16496.39
+Hyundai,12+ years,13,8115.38
+Kia,0-2 years,62,27929.03
+Kia,7-11 years,33,22548.48
+Kia,3-6 years,103,15633.01
+Kia,12+ years,5,8640.0
+Mahindra,7-11 years,50,26470.0
+Mahindra,3-6 years,162,19295.06
+Mahindra,0-2 years,103,17919.42
+Mahindra,12+ years,8,11262.5
+Maruti Suzuki,3-6 years,415,14908.19
+Maruti Suzuki,7-11 years,132,14170.45
+Maruti Suzuki,0-2 years,227,12269.6
+Maruti Suzuki,12+ years,30,12250.0
+Mercedes-Benz,0-2 years,6,65383.33
+Mercedes-Benz,3-6 years,12,52275.0
+Renault,3-6 years,37,17348.65
+Renault,7-11 years,13,16323.08
+Renault,0-2 years,24,14145.83
+Renault,12+ years,5,5740.0
+Skoda,3-6 years,22,29068.18
+Skoda,0-2 years,5,28360.0
+Skoda,7-11 years,7,16014.29
+Tata,0-2 years,123,21300.81
+Tata,3-6 years,212,21197.64
+Tata,7-11 years,77,15518.18
+Tata,12+ years,9,10133.33
+Toyota,0-2 years,43,21600.0
+Toyota,3-6 years,77,18120.78
+Toyota,7-11 years,29,15224.14
+Volkswagen,0-2 years,23,29708.7
+Volkswagen,7-11 years,15,21693.33
+Volkswagen,3-6 years,32,20896.88

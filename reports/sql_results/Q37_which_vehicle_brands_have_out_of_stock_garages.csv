@@ -1,0 +1,9 @@
+Vehicle_Brand,garage_count,out_of_stock_count,out_of_stock_pct
+Renault,5,3,60.0
+Skoda,4,2,50.0
+BMW,3,1,33.33
+Volkswagen,3,1,33.33
+Toyota,7,2,28.57
+Hyundai,20,5,25.0
+Honda,10,2,20.0
+Mahindra,8,1,12.5

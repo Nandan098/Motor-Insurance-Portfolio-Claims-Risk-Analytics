@@ -1,0 +1,13 @@
+Brand_Specialization,Garage_Count,In_Stock_Garages,Preferred_Garages,Preferred_In_Stock_Garages,Average_Turnaround_Days,Claim_Count,Claims_Per_In_Stock_Garage
+BMW,3,2,3,2,1.5333333333333332,23,11.5
+Honda,10,8,6,5,2.89,278,34.75
+Hyundai,20,15,12,9,3.3649999999999998,588,39.2
+Kia,10,10,4,4,2.8,203,20.3
+Mahindra,8,7,7,6,3.5625,323,46.142857142857146
+Maruti Suzuki,20,20,15,15,2.365,804,40.2
+Mercedes-Benz,3,3,2,2,3.0,22,7.333333333333333
+Renault,5,2,2,1,4.76,79,39.5
+Skoda,4,2,1,0,3.275,35,17.5
+Tata,7,7,7,7,3.3857142857142857,421,60.142857142857146
+Toyota,7,5,7,5,2.157142857142857,153,30.6
+Volkswagen,3,2,2,2,3.3333333333333335,71,35.5

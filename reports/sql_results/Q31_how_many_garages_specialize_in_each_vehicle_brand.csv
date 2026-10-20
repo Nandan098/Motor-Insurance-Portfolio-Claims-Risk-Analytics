@@ -1,0 +1,13 @@
+Vehicle_Brand,garage_count,in_stock_garages,preferred_garages
+Hyundai,20,15,12
+Maruti Suzuki,20,20,15
+Honda,10,8,6
+Kia,10,10,4
+Mahindra,8,7,7
+Tata,7,7,7
+Toyota,7,5,7
+Renault,5,2,2
+Skoda,4,2,1
+BMW,3,2,3
+Mercedes-Benz,3,3,2
+Volkswagen,3,2,2

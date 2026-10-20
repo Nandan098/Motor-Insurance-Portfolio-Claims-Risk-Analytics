@@ -1,0 +1,13 @@
+Vehicle_Brand,claim_count,avg_cost_inr,preferred_stock_garages,all_stock_garages,claims_per_preferred_stock_garage
+Renault,79,15472.15,1,2,79.0
+Hyundai,588,18563.61,9,15,65.33
+Tata,421,19952.49,7,7,60.14
+Honda,278,15520.14,5,8,55.6
+Mahindra,323,19768.11,6,7,53.83
+Maruti Suzuki,804,13942.91,15,20,53.6
+Kia,203,20340.39,4,10,50.75
+Volkswagen,71,23945.07,2,2,35.5
+Toyota,153,18198.69,5,5,30.6
+BMW,23,27347.83,2,2,11.5
+Mercedes-Benz,22,54350.0,2,3,11.0
+Skoda,35,25648.57,0,2,

@@ -1,0 +1,101 @@
+GarageID,Garage_Name,Area,Latitude,Longitude,Brand_Specialization,Parts_Available,Preferred_Partner,Daily_Service_Capacity,Avg_Repair_Turnaround_Days,Labor_Rate_INR_Per_Hour
+GAR0001,Faridabad Auto Service Centre 001,Faridabad,28.404601,77.316238,Maruti Suzuki,True,True,12,3.2,723
+GAR0002,Gurugram Auto Service Centre 002,Gurugram,28.437103,77.013373,Mahindra,True,False,16,2.2,962
+GAR0003,Noida Auto Service Centre 003,Noida,28.569781,77.38503,Tata,True,True,9,3.2,964
+GAR0004,Delhi Auto Service Centre 004,Delhi,28.594715,77.227719,Hyundai,True,True,9,2.4,1120
+GAR0005,Gurugram Auto Service Centre 005,Gurugram,28.481643,77.073241,Hyundai,True,False,27,2.2,907
+GAR0006,Delhi Auto Service Centre 006,Delhi,28.601769,77.21736,Kia,True,False,10,0.6,857
+GAR0007,Gurugram Auto Service Centre 007,Gurugram,28.42779,77.028488,Mercedes-Benz,True,False,10,5.7,928
+GAR0008,Gurugram Auto Service Centre 008,Gurugram,28.439158,77.045552,Mahindra,True,True,6,4.3,1051
+GAR0009,Noida Auto Service Centre 009,Noida,28.490708,77.405918,Honda,False,False,23,3.1,723
+GAR0010,Gurugram Auto Service Centre 010,Gurugram,28.464429,77.007972,Honda,False,True,8,1.8,1041
+GAR0011,Gurugram Auto Service Centre 011,Gurugram,28.483587,77.060144,Maruti Suzuki,True,True,20,2.7,1093
+GAR0012,Gurugram Auto Service Centre 012,Gurugram,28.458419,77.010661,Maruti Suzuki,True,True,21,0.5,982
+GAR0013,Delhi Auto Service Centre 013,Delhi,28.634638,77.169814,Toyota,True,True,34,1.8,777
+GAR0014,Noida Auto Service Centre 014,Noida,28.556243,77.414222,Hyundai,True,True,11,0.9,972
+GAR0015,Gurugram Auto Service Centre 015,Gurugram,28.476167,77.015497,Hyundai,False,False,16,4.8,1133
+GAR0016,Ghaziabad Auto Service Centre 016,Ghaziabad,28.652378,77.474601,Toyota,True,True,8,1.3,963
+GAR0017,Gurugram Auto Service Centre 017,Gurugram,28.489373,76.989827,Skoda,True,False,10,3.0,1154
+GAR0018,Gurugram Auto Service Centre 018,Gurugram,28.472196,77.045602,Kia,True,True,7,2.5,1102
+GAR0019,Ghaziabad Auto Service Centre 019,Ghaziabad,28.686989,77.46566,Maruti Suzuki,True,False,13,2.9,742
+GAR0020,Gurugram Auto Service Centre 020,Gurugram,28.451939,76.998792,Maruti Suzuki,True,True,17,1.2,1027
+GAR0021,Noida Auto Service Centre 021,Noida,28.524123,77.375097,Mahindra,True,True,11,3.8,804
+GAR0022,Delhi Auto Service Centre 022,Delhi,28.65281,77.221659,Toyota,True,True,8,3.5,1288
+GAR0023,Delhi Auto Service Centre 023,Delhi,28.599735,77.191611,Skoda,False,False,12,3.1,826
+GAR0024,Gurugram Auto Service Centre 024,Gurugram,28.454435,76.981454,Hyundai,False,True,20,1.4,1034
+GAR0025,Ghaziabad Auto Service Centre 025,Ghaziabad,28.679343,77.442943,Honda,True,False,13,6.3,737
+GAR0026,Gurugram Auto Service Centre 026,Gurugram,28.463767,77.025586,Honda,True,True,13,1.6,1002
+GAR0027,Gurugram Auto Service Centre 027,Gurugram,28.489684,77.036192,Tata,True,True,23,1.2,908
+GAR0028,Faridabad Auto Service Centre 028,Faridabad,28.374418,77.314713,Kia,True,False,8,8.4,775
+GAR0029,Noida Auto Service Centre 029,Noida,28.519102,77.423978,Tata,True,True,13,3.1,901
+GAR0030,Gurugram Auto Service Centre 030,Gurugram,28.504274,77.007461,Toyota,False,True,13,5.1,1066
+GAR0031,Noida Auto Service Centre 031,Noida,28.51201,77.388205,Renault,True,True,15,8.6,856
+GAR0032,Delhi Auto Service Centre 032,Delhi,28.610565,77.183244,Tata,True,True,24,3.7,797
+GAR0033,Ghaziabad Auto Service Centre 033,Ghaziabad,28.687905,77.485577,Hyundai,True,False,29,4.4,802
+GAR0034,Delhi Auto Service Centre 034,Delhi,28.559131,77.187392,Maruti Suzuki,True,True,11,1.8,1015
+GAR0035,Noida Auto Service Centre 035,Noida,28.548251,77.422249,Volkswagen,True,True,24,6.2,892
+GAR0036,Faridabad Auto Service Centre 036,Faridabad,28.421046,77.333866,Hyundai,True,True,9,4.8,734
+GAR0037,Gurugram Auto Service Centre 037,Gurugram,28.436636,77.036867,Honda,True,True,12,4.5,825
+GAR0038,Gurugram Auto Service Centre 038,Gurugram,28.477046,77.039372,Hyundai,True,True,24,2.4,1143
+GAR0039,Delhi Auto Service Centre 039,Delhi,28.626085,77.184515,Hyundai,False,True,10,0.6,876
+GAR0040,Faridabad Auto Service Centre 040,Faridabad,28.401394,77.303308,Kia,True,False,18,0.7,770
+GAR0041,Delhi Auto Service Centre 041,Delhi,28.604563,77.162589,Volkswagen,False,False,12,1.9,1091
+GAR0042,Noida Auto Service Centre 042,Noida,28.548108,77.377703,Hyundai,True,False,18,4.3,715
+GAR0043,Gurugram Auto Service Centre 043,Gurugram,28.478383,77.016808,Maruti Suzuki,True,True,14,1.1,1287
+GAR0044,Gurugram Auto Service Centre 044,Gurugram,28.434093,77.058688,Hyundai,True,False,15,4.9,1140
+GAR0045,Gurugram Auto Service Centre 045,Gurugram,28.504407,77.042854,Maruti Suzuki,True,False,13,1.6,1137
+GAR0046,Delhi Auto Service Centre 046,Delhi,28.566129,77.199584,Kia,True,False,17,0.7,1015
+GAR0047,Noida Auto Service Centre 047,Noida,28.566036,77.450559,Hyundai,False,False,15,3.3,915
+GAR0048,Delhi Auto Service Centre 048,Delhi,28.59507,77.225776,Hyundai,True,True,8,3.6,1253
+GAR0049,Noida Auto Service Centre 049,Noida,28.503094,77.416934,Kia,True,True,9,3.1,935
+GAR0050,Delhi Auto Service Centre 050,Delhi,28.666825,77.229586,Mahindra,True,True,20,2.8,797
+GAR0051,Ghaziabad Auto Service Centre 051,Ghaziabad,28.672465,77.476322,Maruti Suzuki,True,True,15,3.2,870
+GAR0052,Delhi Auto Service Centre 052,Delhi,28.593948,77.174039,Renault,False,False,11,7.4,798
+GAR0053,Gurugram Auto Service Centre 053,Gurugram,28.497714,77.037594,Renault,True,False,11,2.7,1109
+GAR0054,Noida Auto Service Centre 054,Noida,28.511191,77.359324,Volkswagen,True,True,15,1.9,1080
+GAR0055,Noida Auto Service Centre 055,Noida,28.549134,77.384113,Skoda,False,True,16,1.5,769
+GAR0056,Delhi Auto Service Centre 056,Delhi,28.596563,77.233174,Renault,False,True,5,3.3,835
+GAR0057,Noida Auto Service Centre 057,Noida,28.552205,77.419051,Mahindra,True,True,12,1.4,1093
+GAR0058,Delhi Auto Service Centre 058,Delhi,28.647776,77.267203,Hyundai,True,True,11,3.9,1071
+GAR0059,Faridabad Auto Service Centre 059,Faridabad,28.390701,77.311548,Hyundai,True,False,15,0.5,771
+GAR0060,Delhi Auto Service Centre 060,Delhi,28.556859,77.216972,BMW,True,True,24,3.1,868
+GAR0061,Noida Auto Service Centre 061,Noida,28.527552,77.394508,Maruti Suzuki,True,True,23,0.7,974
+GAR0062,Noida Auto Service Centre 062,Noida,28.507194,77.3859,Tata,True,True,17,3.1,841
+GAR0063,Delhi Auto Service Centre 063,Delhi,28.605496,77.208357,Mercedes-Benz,True,True,15,2.2,689
+GAR0064,Delhi Auto Service Centre 064,Delhi,28.633534,77.169472,Kia,True,True,11,3.2,875
+GAR0065,Delhi Auto Service Centre 065,Delhi,28.647308,77.228619,Hyundai,True,True,22,0.9,789
+GAR0066,Delhi Auto Service Centre 066,Delhi,28.603558,77.227966,Renault,False,False,30,1.8,740
+GAR0067,Noida Auto Service Centre 067,Noida,28.523901,77.399342,Hyundai,False,True,11,8.6,1106
+GAR0068,Gurugram Auto Service Centre 068,Gurugram,28.436366,77.017497,Mahindra,False,True,29,5.9,1174
+GAR0069,Gurugram Auto Service Centre 069,Gurugram,28.488346,77.003747,Toyota,False,True,32,2.0,1090
+GAR0070,Delhi Auto Service Centre 070,Delhi,28.581445,77.184356,Tata,True,True,22,4.1,994
+GAR0071,Delhi Auto Service Centre 071,Delhi,28.591995,77.234883,Mahindra,True,True,8,2.9,941
+GAR0072,Ghaziabad Auto Service Centre 072,Ghaziabad,28.706239,77.426558,Honda,True,False,17,2.1,675
+GAR0073,Noida Auto Service Centre 073,Noida,28.533178,77.418692,Kia,True,False,32,3.2,986
+GAR0074,Noida Auto Service Centre 074,Noida,28.52511,77.461536,Kia,True,False,32,1.4,935
+GAR0075,Delhi Auto Service Centre 075,Delhi,28.629118,77.165152,Maruti Suzuki,True,True,25,0.5,811
+GAR0076,Ghaziabad Auto Service Centre 076,Ghaziabad,28.675327,77.392024,BMW,True,True,8,0.5,772
+GAR0077,Noida Auto Service Centre 077,Noida,28.538794,77.399329,Honda,True,False,27,1.6,844
+GAR0078,Delhi Auto Service Centre 078,Delhi,28.599203,77.186875,Maruti Suzuki,True,False,14,3.8,837
+GAR0079,Delhi Auto Service Centre 079,Delhi,28.643961,77.237302,Honda,True,True,8,1.7,917
+GAR0080,Gurugram Auto Service Centre 080,Gurugram,28.485286,77.012067,Mercedes-Benz,True,True,8,1.1,1038
+GAR0081,Faridabad Auto Service Centre 081,Faridabad,28.424541,77.309197,Toyota,True,True,11,0.5,730
+GAR0082,Delhi Auto Service Centre 082,Delhi,28.615045,77.186298,Mahindra,True,True,11,5.2,1102
+GAR0083,Gurugram Auto Service Centre 083,Gurugram,28.485682,77.025538,Tata,True,True,28,5.3,979
+GAR0084,Gurugram Auto Service Centre 084,Gurugram,28.456581,77.038306,Maruti Suzuki,True,True,31,3.1,1128
+GAR0085,Delhi Auto Service Centre 085,Delhi,28.62786,77.274824,Toyota,True,True,22,0.9,874
+GAR0086,Ghaziabad Auto Service Centre 086,Ghaziabad,28.641137,77.490737,Maruti Suzuki,True,False,17,4.4,677
+GAR0087,Delhi Auto Service Centre 087,Delhi,28.625852,77.20613,Skoda,True,False,13,5.5,981
+GAR0088,Gurugram Auto Service Centre 088,Gurugram,28.489279,77.02156,Maruti Suzuki,True,True,5,1.5,945
+GAR0089,Delhi Auto Service Centre 089,Delhi,28.606362,77.172815,Maruti Suzuki,True,True,9,7.7,1005
+GAR0090,Faridabad Auto Service Centre 090,Faridabad,28.406704,77.281059,Hyundai,True,False,10,2.2,785
+GAR0091,Noida Auto Service Centre 091,Noida,28.562878,77.397356,BMW,False,True,20,1.0,873
+GAR0092,Delhi Auto Service Centre 092,Delhi,28.588893,77.184408,Maruti Suzuki,True,True,6,1.5,1003
+GAR0093,Noida Auto Service Centre 093,Noida,28.547821,77.350291,Maruti Suzuki,True,True,18,2.0,1318
+GAR0094,Delhi Auto Service Centre 094,Delhi,28.62513,77.203495,Maruti Suzuki,True,False,9,3.4,879
+GAR0095,Ghaziabad Auto Service Centre 095,Ghaziabad,28.714383,77.437763,Kia,True,True,20,4.2,727
+GAR0096,Gurugram Auto Service Centre 096,Gurugram,28.446434,76.991244,Honda,True,True,11,2.0,1016
+GAR0097,Noida Auto Service Centre 097,Noida,28.542399,77.402531,Hyundai,True,True,33,2.2,843
+GAR0098,Gurugram Auto Service Centre 098,Gurugram,28.454847,77.040597,Hyundai,True,True,20,9.0,962
+GAR0099,Gurugram Auto Service Centre 099,Gurugram,28.493861,77.043133,Maruti Suzuki,True,True,33,0.5,1045
+GAR0100,Delhi Auto Service Centre 100,Delhi,28.620591,77.172393,Honda,True,True,22,4.2,1145

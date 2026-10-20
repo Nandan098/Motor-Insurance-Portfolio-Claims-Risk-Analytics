@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "data_quality_checks_passed": 15,
+  "data_quality_check_count": 15,
+  "sql_questions_passed": 55,
+  "sql_questions_total": 55,
+  "model_metrics": {
+    "MAE_INR": 4517.15161334697,
+    "RMSE_INR": 9065.383370136176,
+    "R2": 0.7687627162557243,
+    "WAPE_PERCENT": 30.55501530978087,
+    "Baseline_Median_MAE_INR": 10653.333333333334,
+    "Baseline_Median_RMSE_INR": 20103.959808953063,
+    "model": "RandomForestRegressor",
+    "target": "Actual_Repair_Cost_INR",
+    "training_rows": 2400,
+    "holdout_rows": 600,
+    "training_start": "2023-01-03 08:05:00",
+    "training_end": "2025-05-13 06:30:00",
+    "holdout_start": "2025-05-13 07:17:00",
+    "holdout_end": "2025-12-31 19:14:00",
+    "split_strategy": "chronological 80/20 holdout by accident timestamp and ClaimID",
+    "baseline": "constant median repair cost calculated from training period",
+    "data_status": "synthetic demonstration data; metrics measure ability to learn simulated target",
+    "holdout_beats_baseline_on_MAE": true
+  },
+  "routing_summary": {
+    "claims_routed": 3000,
+    "average_recommended_distance_km": 7.093,
+    "preferred_fallback_claims": 35
+  },
+  "database_path": "/mnt/data/EXL_Auto_Insurance_Telematics_Optimization_Project/data/processed/auto_insurance_analytics.sqlite",
+  "optimized_csv_path": "/mnt/data/EXL_Auto_Insurance_Telematics_Optimization_Project/outputs/telematics_claims_optimized.csv",
+  "excel_workbook_path": "/mnt/data/EXL_Auto_Insurance_Telematics_Optimization_Project/outputs/telematics_claims_optimized.xlsx",
+  "notice": "All records are synthetic and generated; model metrics describe the simulated target only."
+}

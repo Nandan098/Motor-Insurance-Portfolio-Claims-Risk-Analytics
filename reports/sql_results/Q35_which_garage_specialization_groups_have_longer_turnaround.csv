@@ -1,0 +1,13 @@
+Vehicle_Brand,garage_count,avg_turnaround_days,min_turnaround_days,max_turnaround_days
+Renault,5,4.76,1.8,8.6
+Mahindra,8,3.56,1.4,5.9
+Tata,7,3.39,1.2,5.3
+Hyundai,20,3.36,0.5,9.0
+Volkswagen,3,3.33,1.9,6.2
+Skoda,4,3.27,1.5,5.5
+Mercedes-Benz,3,3.0,1.1,5.7
+Honda,10,2.89,1.6,6.3
+Kia,10,2.8,0.6,8.4
+Maruti Suzuki,20,2.37,0.5,7.7
+Toyota,7,2.16,0.5,5.1
+BMW,3,1.53,0.5,3.1

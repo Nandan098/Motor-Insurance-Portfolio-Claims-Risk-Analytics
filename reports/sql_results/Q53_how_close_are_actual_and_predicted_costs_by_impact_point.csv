@@ -1,0 +1,4 @@
+Impact_Point,holdout_claims,avg_actual_cost_inr,avg_predicted_cost_inr,mae_inr
+Front,280,15832.86,16373.74,4751.7
+Side,176,15981.25,16762.79,4598.92
+Rear,144,11279.86,13729.39,3961.14

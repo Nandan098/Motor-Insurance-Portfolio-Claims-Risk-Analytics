@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "check_count": 15,
+  "passed_count": 15,
+  "failed_checks": [],
+  "claims_rows": 3000,
+  "garage_rows": 100,
+  "claims_duplicate_id_count": 0,
+  "garages_duplicate_id_count": 0,
+  "claims_missing_cell_count": 0,
+  "garages_missing_cell_count": 0,
+  "checks": {
+    "claims_rows_3000": true,
+    "garages_rows_100": true,
+    "claim_ids_unique": true,
+    "garage_ids_unique": true,
+    "required_claim_fields_non_null": true,
+    "repair_costs_positive": true,
+    "speeds_nonnegative": true,
+    "g_force_positive": true,
+    "claim_coordinates_in_valid_range": true,
+    "garage_coordinates_in_valid_range": true,
+    "garage_capacity_positive": true,
+    "all_claim_brands_have_garage_specialization": true,
+    "all_claim_brands_have_in_stock_garage": true,
+    "accident_dates_parse": true,
+    "vehicle_model_year_not_after_accident_year": true
+  }
+}

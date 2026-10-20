@@ -1,0 +1,2 @@
+-- SQLite tables are materialized by src/build_sqlite_database.py from project CSV outputs.
+-- Main tables: telematics_claims, partner_garages, garage_routing, holdout_predictions, claims_cost_scored_demo.

@@ -1,0 +1,5 @@
+speed_band,claim_count,airbag_deployment_pct
+High (50-79),399,11.53
+Low (<25),1654,0.85
+Moderate (25-49),750,3.6
+Very high (80+),197,43.15

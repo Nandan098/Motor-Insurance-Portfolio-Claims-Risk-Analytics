@@ -1,0 +1,5 @@
+speed_band,holdout_claims,mae_inr,avg_actual_cost_inr,avg_predicted_cost_inr
+High (50-79),76,9804.04,33425.0,35470.83
+Low (<25),337,1409.35,4812.76,4907.0
+Moderate (25-49),160,5064.15,17205.63,17852.35
+Very high (80+),27,25184.04,72411.11,85411.64

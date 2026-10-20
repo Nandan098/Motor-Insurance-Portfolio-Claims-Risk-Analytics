@@ -1,0 +1,10 @@
+Vehicle_Brand,holdout_claims,mean_signed_error_inr,mean_absolute_error_inr
+Toyota,34,-3447.3,4570.14
+Maruti Suzuki,151,2759.54,4946.74
+Tata,88,2591.04,5560.37
+Hyundai,120,1846.48,4021.87
+Kia,42,-1822.94,4114.54
+Volkswagen,14,-1053.32,4154.76
+Mahindra,64,474.88,3789.75
+Honda,58,435.27,4016.48
+Renault,18,-313.1,3156.32

@@ -1,0 +1,49 @@
+Vehicle_Brand,severity_band,claim_count
+BMW,Low,15
+BMW,Moderate,5
+BMW,Very high,2
+BMW,High,1
+Honda,Low,166
+Honda,Moderate,64
+Honda,High,38
+Honda,Very high,10
+Hyundai,Low,331
+Hyundai,Moderate,145
+Hyundai,High,73
+Hyundai,Very high,39
+Kia,Low,105
+Kia,Moderate,56
+Kia,High,26
+Kia,Very high,16
+Mahindra,Low,166
+Mahindra,Moderate,84
+Mahindra,High,50
+Mahindra,Very high,23
+Maruti Suzuki,Low,455
+Maruti Suzuki,Moderate,200
+Maruti Suzuki,High,98
+Maruti Suzuki,Very high,51
+Mercedes-Benz,Low,11
+Mercedes-Benz,Moderate,4
+Mercedes-Benz,High,4
+Mercedes-Benz,Very high,3
+Renault,Low,42
+Renault,Moderate,27
+Renault,High,6
+Renault,Very high,4
+Skoda,Low,20
+Skoda,Moderate,7
+Skoda,High,5
+Skoda,Very high,3
+Tata,Low,221
+Tata,Moderate,97
+Tata,High,70
+Tata,Very high,33
+Toyota,Low,89
+Toyota,Moderate,39
+Toyota,High,16
+Toyota,Very high,9
+Volkswagen,Low,33
+Volkswagen,Moderate,22
+Volkswagen,High,12
+Volkswagen,Very high,4

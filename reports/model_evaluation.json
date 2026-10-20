@@ -1,0 +1,20 @@
+{
+  "MAE_INR": 4517.15161334697,
+  "RMSE_INR": 9065.383370136176,
+  "R2": 0.7687627162557243,
+  "WAPE_PERCENT": 30.55501530978087,
+  "Baseline_Median_MAE_INR": 10653.333333333334,
+  "Baseline_Median_RMSE_INR": 20103.959808953063,
+  "model": "RandomForestRegressor",
+  "target": "Actual_Repair_Cost_INR",
+  "training_rows": 2400,
+  "holdout_rows": 600,
+  "training_start": "2023-01-03 08:05:00",
+  "training_end": "2025-05-13 06:30:00",
+  "holdout_start": "2025-05-13 07:17:00",
+  "holdout_end": "2025-12-31 19:14:00",
+  "split_strategy": "chronological 80/20 holdout by accident timestamp and ClaimID",
+  "baseline": "constant median repair cost calculated from training period",
+  "data_status": "synthetic demonstration data; metrics measure ability to learn simulated target",
+  "holdout_beats_baseline_on_MAE": true
+}

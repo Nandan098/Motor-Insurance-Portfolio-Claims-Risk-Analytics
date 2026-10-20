@@ -1,0 +1,3023 @@
+[
+  {
+    "id": "Q01",
+    "category": "Portfolio overview",
+    "title": "What is the overall claims portfolio?",
+    "business_value": "Establish the overall volume and cost baseline.",
+    "sql": "SELECT COUNT(*) AS claim_count, COUNT(DISTINCT VehicleID) AS distinct_vehicles, ROUND(SUM(Actual_Repair_Cost_INR), 2) AS total_repair_cost_inr, ROUND(AVG(Actual_Repair_Cost_INR), 2) AS average_repair_cost_inr, MIN(AccidentDate) AS first_accident, MAX(AccidentDate) AS last_accident FROM telematics_claims;",
+    "status": "PASS",
+    "row_count": 1,
+    "columns": [
+      "claim_count",
+      "distinct_vehicles",
+      "total_repair_cost_inr",
+      "average_repair_cost_inr",
+      "first_accident",
+      "last_accident"
+    ],
+    "preview": [
+      {
+        "claim_count": 3000,
+        "distinct_vehicles": 2885,
+        "total_repair_cost_inr": 53783500.0,
+        "average_repair_cost_inr": 17927.83,
+        "first_accident": "2023-01-03 08:05:00",
+        "last_accident": "2025-12-31 19:14:00"
+      }
+    ]
+  },
+  {
+    "id": "Q02",
+    "category": "Portfolio overview",
+    "title": "How many repeat-incident vehicles are present?",
+    "business_value": "Understand repeat vehicle incidents; repeats are not inherently suspicious.",
+    "sql": "SELECT COUNT(*) AS vehicles_with_multiple_claims FROM (SELECT VehicleID FROM telematics_claims GROUP BY VehicleID HAVING COUNT(*) > 1);",
+    "status": "PASS",
+    "row_count": 1,
+    "columns": [
+      "vehicles_with_multiple_claims"
+    ],
+    "preview": [
+      {
+        "vehicles_with_multiple_claims": 51
+      }
+    ]
+  },
+  {
+    "id": "Q03",
+    "category": "Vehicle brand",
+    "title": "Which brands account for the most claims?",
+    "business_value": "Understand portfolio mix and avoid treating raw volume as risk rate.",
+    "sql": "SELECT Vehicle_Brand, COUNT(*) AS claim_count, ROUND(100.0 * COUNT(*) / (SELECT COUNT(*) FROM telematics_claims), 2) AS claim_share_pct FROM telematics_claims GROUP BY Vehicle_Brand ORDER BY claim_count DESC;",
+    "status": "PASS",
+    "row_count": 12,
+    "columns": [
+      "Vehicle_Brand",
+      "claim_count",
+      "claim_share_pct"
+    ],
+    "preview": [
+      {
+        "Vehicle_Brand": "Maruti Suzuki",
+        "claim_count": 804,
+        "claim_share_pct": 26.8
+      },
+      {
+        "Vehicle_Brand": "Hyundai",
+        "claim_count": 588,
+        "claim_share_pct": 19.6
+      },
+      {
+        "Vehicle_Brand": "Tata",
+        "claim_count": 421,
+        "claim_share_pct": 14.03
+      },
+      {
+        "Vehicle_Brand": "Mahindra",
+        "claim_count": 323,
+        "claim_share_pct": 10.77
+      },
+      {
+        "Vehicle_Brand": "Honda",
+        "claim_count": 278,
+        "claim_share_pct": 9.27
+      },
+      {
+        "Vehicle_Brand": "Kia",
+        "claim_count": 203,
+        "claim_share_pct": 6.77
+      },
+      {
+        "Vehicle_Brand": "Toyota",
+        "claim_count": 153,
+        "claim_share_pct": 5.1
+      },
+      {
+        "Vehicle_Brand": "Renault",
+        "claim_count": 79,
+        "claim_share_pct": 2.63
+      }
+    ]
+  },
+  {
+    "id": "Q04",
+    "category": "Vehicle brand",
+    "title": "Which brands have the highest average repair cost?",
+    "business_value": "Compare claim severity across manufacturers.",
+    "sql": "SELECT Vehicle_Brand, COUNT(*) AS claim_count, ROUND(AVG(Actual_Repair_Cost_INR), 2) AS avg_cost_inr, ROUND(SUM(Actual_Repair_Cost_INR), 2) AS total_cost_inr FROM telematics_claims GROUP BY Vehicle_Brand HAVING COUNT(*) >= 20 ORDER BY avg_cost_inr DESC;",
+    "status": "PASS",
+    "row_count": 12,
+    "columns": [
+      "Vehicle_Brand",
+      "claim_count",
+      "avg_cost_inr",
+      "total_cost_inr"
+    ],
+    "preview": [
+      {
+        "Vehicle_Brand": "Mercedes-Benz",
+        "claim_count": 22,
+        "avg_cost_inr": 54350.0,
+        "total_cost_inr": 1195700.0
+      },
+      {
+        "Vehicle_Brand": "BMW",
+        "claim_count": 23,
+        "avg_cost_inr": 27347.83,
+        "total_cost_inr": 629000.0
+      },
+      {
+        "Vehicle_Brand": "Skoda",
+        "claim_count": 35,
+        "avg_cost_inr": 25648.57,
+        "total_cost_inr": 897700.0
+      },
+      {
+        "Vehicle_Brand": "Volkswagen",
+        "claim_count": 71,
+        "avg_cost_inr": 23945.07,
+        "total_cost_inr": 1700100.0
+      },
+      {
+        "Vehicle_Brand": "Kia",
+        "claim_count": 203,
+        "avg_cost_inr": 20340.39,
+        "total_cost_inr": 4129100.0
+      },
+      {
+        "Vehicle_Brand": "Tata",
+        "claim_count": 421,
+        "avg_cost_inr": 19952.49,
+        "total_cost_inr": 8400000.0
+      },
+      {
+        "Vehicle_Brand": "Mahindra",
+        "claim_count": 323,
+        "avg_cost_inr": 19768.11,
+        "total_cost_inr": 6385100.0
+      },
+      {
+        "Vehicle_Brand": "Hyundai",
+        "claim_count": 588,
+        "avg_cost_inr": 18563.61,
+        "total_cost_inr": 10915400.0
+      }
+    ]
+  },
+  {
+    "id": "Q05",
+    "category": "Vehicle brand",
+    "title": "What share of total repair spend comes from each brand?",
+    "business_value": "Find where the largest absolute financial exposure sits.",
+    "sql": "SELECT Vehicle_Brand, ROUND(SUM(Actual_Repair_Cost_INR), 2) AS total_cost_inr, ROUND(100.0 * SUM(Actual_Repair_Cost_INR) / (SELECT SUM(Actual_Repair_Cost_INR) FROM telematics_claims), 2) AS cost_share_pct FROM telematics_claims GROUP BY Vehicle_Brand ORDER BY total_cost_inr DESC;",
+    "status": "PASS",
+    "row_count": 12,
+    "columns": [
+      "Vehicle_Brand",
+      "total_cost_inr",
+      "cost_share_pct"
+    ],
+    "preview": [
+      {
+        "Vehicle_Brand": "Maruti Suzuki",
+        "total_cost_inr": 11210100.0,
+        "cost_share_pct": 20.84
+      },
+      {
+        "Vehicle_Brand": "Hyundai",
+        "total_cost_inr": 10915400.0,
+        "cost_share_pct": 20.3
+      },
+      {
+        "Vehicle_Brand": "Tata",
+        "total_cost_inr": 8400000.0,
+        "cost_share_pct": 15.62
+      },
+      {
+        "Vehicle_Brand": "Mahindra",
+        "total_cost_inr": 6385100.0,
+        "cost_share_pct": 11.87
+      },
+      {
+        "Vehicle_Brand": "Honda",
+        "total_cost_inr": 4314600.0,
+        "cost_share_pct": 8.02
+      },
+      {
+        "Vehicle_Brand": "Kia",
+        "total_cost_inr": 4129100.0,
+        "cost_share_pct": 7.68
+      },
+      {
+        "Vehicle_Brand": "Toyota",
+        "total_cost_inr": 2784400.0,
+        "cost_share_pct": 5.18
+      },
+      {
+        "Vehicle_Brand": "Volkswagen",
+        "total_cost_inr": 1700100.0,
+        "cost_share_pct": 3.16
+      }
+    ]
+  },
+  {
+    "id": "Q06",
+    "category": "Crash severity",
+    "title": "How does impact point relate to repair cost?",
+    "business_value": "Quantify repair-cost differences by damaged vehicle zone.",
+    "sql": "SELECT Impact_Point, COUNT(*) AS claim_count, ROUND(AVG(Actual_Repair_Cost_INR), 2) AS avg_cost_inr, ROUND(AVG(Speed_At_Impact_kmh), 2) AS avg_impact_speed_kmh, ROUND(100.0 * AVG(Airbag_Deployed), 2) AS airbag_rate_pct FROM telematics_claims GROUP BY Impact_Point ORDER BY avg_cost_inr DESC;",
+    "status": "PASS",
+    "row_count": 3,
+    "columns": [
+      "Impact_Point",
+      "claim_count",
+      "avg_cost_inr",
+      "avg_impact_speed_kmh",
+      "airbag_rate_pct"
+    ],
+    "preview": [
+      {
+        "Impact_Point": "Front",
+        "claim_count": 1446,
+        "avg_cost_inr": 19603.11,
+        "avg_impact_speed_kmh": 29.95,
+        "airbag_rate_pct": 6.64
+      },
+      {
+        "Impact_Point": "Side",
+        "claim_count": 836,
+        "avg_cost_inr": 18836.96,
+        "avg_impact_speed_kmh": 31.34,
+        "airbag_rate_pct": 5.26
+      },
+      {
+        "Impact_Point": "Rear",
+        "claim_count": 718,
+        "avg_cost_inr": 13495.4,
+        "avg_impact_speed_kmh": 29.6,
+        "airbag_rate_pct": 4.46
+      }
+    ]
+  },
+  {
+    "id": "Q07",
+    "category": "Crash severity",
+    "title": "How does airbag deployment relate to repair cost?",
+    "business_value": "Study a severity proxy; airbag deployment is not a causal estimate.",
+    "sql": "SELECT Airbag_Deployed, COUNT(*) AS claim_count, ROUND(AVG(Speed_At_Impact_kmh), 2) AS avg_speed_kmh, ROUND(AVG(G_Force_Impact), 2) AS avg_g_force, ROUND(AVG(Actual_Repair_Cost_INR), 2) AS avg_cost_inr FROM telematics_claims GROUP BY Airbag_Deployed ORDER BY Airbag_Deployed;",
+    "status": "PASS",
+    "row_count": 2,
+    "columns": [
+      "Airbag_Deployed",
+      "claim_count",
+      "avg_speed_kmh",
+      "avg_g_force",
+      "avg_cost_inr"
+    ],
+    "preview": [
+      {
+        "Airbag_Deployed": 0,
+        "claim_count": 2828,
+        "avg_speed_kmh": 27.38,
+        "avg_g_force": 1.26,
+        "avg_cost_inr": 13845.72
+      },
+      {
+        "Airbag_Deployed": 1,
+        "claim_count": 172,
+        "avg_speed_kmh": 77.42,
+        "avg_g_force": 3.55,
+        "avg_cost_inr": 85045.35
+      }
+    ]
+  },
+  {
+    "id": "Q08",
+    "category": "Crash severity",
+    "title": "What are repair costs by impact-speed band?",
+    "business_value": "Understand the cost curve over increasing impact speeds.",
+    "sql": "SELECT CASE WHEN Speed_At_Impact_kmh < 25 THEN '01 Low (<25)' WHEN Speed_At_Impact_kmh < 50 THEN '02 Moderate (25-49)' WHEN Speed_At_Impact_kmh < 80 THEN '03 High (50-79)' ELSE '04 Very high (80+)' END AS speed_band, COUNT(*) AS claim_count, ROUND(AVG(Actual_Repair_Cost_INR), 2) AS avg_cost_inr, ROUND(AVG(G_Force_Impact), 2) AS avg_g_force FROM telematics_claims GROUP BY speed_band ORDER BY speed_band;",
+    "status": "PASS",
+    "row_count": 4,
+    "columns": [
+      "speed_band",
+      "claim_count",
+      "avg_cost_inr",
+      "avg_g_force"
+    ],
+    "preview": [
+      {
+        "speed_band": "01 Low (<25)",
+        "claim_count": 1654,
+        "avg_cost_inr": 4932.83,
+        "avg_g_force": 0.71
+      },
+      {
+        "speed_band": "02 Moderate (25-49)",
+        "claim_count": 750,
+        "avg_cost_inr": 17160.0,
+        "avg_g_force": 1.5
+      },
+      {
+        "speed_band": "03 High (50-79)",
+        "claim_count": 399,
+        "avg_cost_inr": 36715.79,
+        "avg_g_force": 2.48
+      },
+      {
+        "speed_band": "04 Very high (80+)",
+        "claim_count": 197,
+        "avg_cost_inr": 91903.55,
+        "avg_g_force": 4.43
+      }
+    ]
+  },
+  {
+    "id": "Q09",
+    "category": "Crash severity",
+    "title": "How does G-force band relate to average cost?",
+    "business_value": "Use impact acceleration as another severity indicator.",
+    "sql": "SELECT CASE WHEN G_Force_Impact < 2 THEN '01 <2g' WHEN G_Force_Impact < 4 THEN '02 2-4g' WHEN G_Force_Impact < 7 THEN '03 4-7g' ELSE '04 7g+' END AS g_force_band, COUNT(*) AS claim_count, ROUND(AVG(Speed_At_Impact_kmh), 2) AS avg_speed_kmh, ROUND(AVG(Actual_Repair_Cost_INR), 2) AS avg_cost_inr FROM telematics_claims GROUP BY g_force_band ORDER BY g_force_band;",
+    "status": "PASS",
+    "row_count": 4,
+    "columns": [
+      "g_force_band",
+      "claim_count",
+      "avg_speed_kmh",
+      "avg_cost_inr"
+    ],
+    "preview": [
+      {
+        "g_force_band": "01 <2g",
+        "claim_count": 2400,
+        "avg_speed_kmh": 19.87,
+        "avg_cost_inr": 9041.13
+      },
+      {
+        "g_force_band": "02 2-4g",
+        "claim_count": 496,
+        "avg_speed_kmh": 64.35,
+        "avg_cost_inr": 40861.29
+      },
+      {
+        "g_force_band": "03 4-7g",
+        "claim_count": 96,
+        "avg_speed_kmh": 104.74,
+        "avg_cost_inr": 106394.79
+      },
+      {
+        "g_force_band": "04 7g+",
+        "claim_count": 8,
+        "avg_speed_kmh": 136.57,
+        "avg_cost_inr": 200462.5
+      }
+    ]
+  },
+  {
+    "id": "Q10",
+    "category": "Crash context",
+    "title": "Does weather condition correspond to different claim costs?",
+    "business_value": "Compare descriptive patterns across weather conditions.",
+    "sql": "SELECT Weather_Condition, COUNT(*) AS claim_count, ROUND(AVG(Actual_Repair_Cost_INR), 2) AS avg_cost_inr, ROUND(AVG(Speed_At_Impact_kmh), 2) AS avg_speed_kmh FROM telematics_claims GROUP BY Weather_Condition ORDER BY claim_count DESC;",
+    "status": "PASS",
+    "row_count": 4,
+    "columns": [
+      "Weather_Condition",
+      "claim_count",
+      "avg_cost_inr",
+      "avg_speed_kmh"
+    ],
+    "preview": [
+      {
+        "Weather_Condition": "Clear",
+        "claim_count": 2172,
+        "avg_cost_inr": 18358.06,
+        "avg_speed_kmh": 30.4
+      },
+      {
+        "Weather_Condition": "Light Rain",
+        "claim_count": 514,
+        "avg_cost_inr": 16092.22,
+        "avg_speed_kmh": 29.35
+      },
+      {
+        "Weather_Condition": "Heavy Rain",
+        "claim_count": 208,
+        "avg_cost_inr": 18067.31,
+        "avg_speed_kmh": 31.1
+      },
+      {
+        "Weather_Condition": "Fog",
+        "claim_count": 106,
+        "avg_cost_inr": 17739.62,
+        "avg_speed_kmh": 29.92
+      }
+    ]
+  },
+  {
+    "id": "Q11",
+    "category": "Crash context",
+    "title": "Which road types have the highest average repair cost?",
+    "business_value": "Inform road-context segmentation and severity reporting.",
+    "sql": "SELECT Road_Type, COUNT(*) AS claim_count, ROUND(AVG(Actual_Repair_Cost_INR), 2) AS avg_cost_inr, ROUND(AVG(Speed_At_Impact_kmh), 2) AS avg_speed_kmh FROM telematics_claims GROUP BY Road_Type ORDER BY avg_cost_inr DESC;",
+    "status": "PASS",
+    "row_count": 4,
+    "columns": [
+      "Road_Type",
+      "claim_count",
+      "avg_cost_inr",
+      "avg_speed_kmh"
+    ],
+    "preview": [
+      {
+        "Road_Type": "Highway",
+        "claim_count": 532,
+        "avg_cost_inr": 19731.02,
+        "avg_speed_kmh": 32.14
+      },
+      {
+        "Road_Type": "Service Road",
+        "claim_count": 414,
+        "avg_cost_inr": 18795.41,
+        "avg_speed_kmh": 31.53
+      },
+      {
+        "Road_Type": "Residential",
+        "claim_count": 833,
+        "avg_cost_inr": 17763.63,
+        "avg_speed_kmh": 29.57
+      },
+      {
+        "Road_Type": "Urban Arterial",
+        "claim_count": 1221,
+        "avg_cost_inr": 16960.03,
+        "avg_speed_kmh": 29.46
+      }
+    ]
+  },
+  {
+    "id": "Q12",
+    "category": "Geography",
+    "title": "Which crash areas carry the largest repair spend?",
+    "business_value": "Compare volume and financial burden by simulated area.",
+    "sql": "SELECT Crash_Area, COUNT(*) AS claim_count, ROUND(SUM(Actual_Repair_Cost_INR), 2) AS total_cost_inr, ROUND(AVG(Actual_Repair_Cost_INR), 2) AS avg_cost_inr FROM telematics_claims GROUP BY Crash_Area ORDER BY total_cost_inr DESC;",
+    "status": "PASS",
+    "row_count": 5,
+    "columns": [
+      "Crash_Area",
+      "claim_count",
+      "total_cost_inr",
+      "avg_cost_inr"
+    ],
+    "preview": [
+      {
+        "Crash_Area": "Delhi",
+        "claim_count": 1203,
+        "total_cost_inr": 21495800.0,
+        "avg_cost_inr": 17868.5
+      },
+      {
+        "Crash_Area": "Gurugram",
+        "claim_count": 655,
+        "total_cost_inr": 11290900.0,
+        "avg_cost_inr": 17238.02
+      },
+      {
+        "Crash_Area": "Noida",
+        "claim_count": 587,
+        "total_cost_inr": 10526900.0,
+        "avg_cost_inr": 17933.39
+      },
+      {
+        "Crash_Area": "Faridabad",
+        "claim_count": 270,
+        "total_cost_inr": 5359200.0,
+        "avg_cost_inr": 19848.89
+      },
+      {
+        "Crash_Area": "Ghaziabad",
+        "claim_count": 285,
+        "total_cost_inr": 5110700.0,
+        "avg_cost_inr": 17932.28
+      }
+    ]
+  },
+  {
+    "id": "Q13",
+    "category": "Time trends",
+    "title": "How many claims occur each month?",
+    "business_value": "Provide a monthly operational workload baseline.",
+    "sql": "SELECT strftime('%Y-%m', AccidentDate) AS accident_month, COUNT(*) AS claim_count, ROUND(SUM(Actual_Repair_Cost_INR), 2) AS total_cost_inr, ROUND(AVG(Actual_Repair_Cost_INR), 2) AS avg_cost_inr FROM telematics_claims GROUP BY accident_month ORDER BY accident_month;",
+    "status": "PASS",
+    "row_count": 36,
+    "columns": [
+      "accident_month",
+      "claim_count",
+      "total_cost_inr",
+      "avg_cost_inr"
+    ],
+    "preview": [
+      {
+        "accident_month": "2023-01",
+        "claim_count": 92,
+        "total_cost_inr": 2211100.0,
+        "avg_cost_inr": 24033.7
+      },
+      {
+        "accident_month": "2023-02",
+        "claim_count": 84,
+        "total_cost_inr": 1153100.0,
+        "avg_cost_inr": 13727.38
+      },
+      {
+        "accident_month": "2023-03",
+        "claim_count": 95,
+        "total_cost_inr": 2169900.0,
+        "avg_cost_inr": 22841.05
+      },
+      {
+        "accident_month": "2023-04",
+        "claim_count": 76,
+        "total_cost_inr": 1360700.0,
+        "avg_cost_inr": 17903.95
+      },
+      {
+        "accident_month": "2023-05",
+        "claim_count": 83,
+        "total_cost_inr": 1583400.0,
+        "avg_cost_inr": 19077.11
+      },
+      {
+        "accident_month": "2023-06",
+        "claim_count": 95,
+        "total_cost_inr": 1787500.0,
+        "avg_cost_inr": 18815.79
+      },
+      {
+        "accident_month": "2023-07",
+        "claim_count": 78,
+        "total_cost_inr": 1525800.0,
+        "avg_cost_inr": 19561.54
+      },
+      {
+        "accident_month": "2023-08",
+        "claim_count": 94,
+        "total_cost_inr": 1644700.0,
+        "avg_cost_inr": 17496.81
+      }
+    ]
+  },
+  {
+    "id": "Q14",
+    "category": "Time trends",
+    "title": "How does monthly claim count change from the prior month?",
+    "business_value": "Spot volume changes with a window function.",
+    "sql": "WITH monthly AS (SELECT strftime('%Y-%m', AccidentDate) AS accident_month, COUNT(*) AS claim_count FROM telematics_claims GROUP BY accident_month) SELECT accident_month, claim_count, LAG(claim_count) OVER (ORDER BY accident_month) AS prior_month_claims, claim_count - LAG(claim_count) OVER (ORDER BY accident_month) AS month_over_month_change FROM monthly ORDER BY accident_month;",
+    "status": "PASS",
+    "row_count": 36,
+    "columns": [
+      "accident_month",
+      "claim_count",
+      "prior_month_claims",
+      "month_over_month_change"
+    ],
+    "preview": [
+      {
+        "accident_month": "2023-01",
+        "claim_count": 92,
+        "prior_month_claims": NaN,
+        "month_over_month_change": NaN
+      },
+      {
+        "accident_month": "2023-02",
+        "claim_count": 84,
+        "prior_month_claims": 92.0,
+        "month_over_month_change": -8.0
+      },
+      {
+        "accident_month": "2023-03",
+        "claim_count": 95,
+        "prior_month_claims": 84.0,
+        "month_over_month_change": 11.0
+      },
+      {
+        "accident_month": "2023-04",
+        "claim_count": 76,
+        "prior_month_claims": 95.0,
+        "month_over_month_change": -19.0
+      },
+      {
+        "accident_month": "2023-05",
+        "claim_count": 83,
+        "prior_month_claims": 76.0,
+        "month_over_month_change": 7.0
+      },
+      {
+        "accident_month": "2023-06",
+        "claim_count": 95,
+        "prior_month_claims": 83.0,
+        "month_over_month_change": 12.0
+      },
+      {
+        "accident_month": "2023-07",
+        "claim_count": 78,
+        "prior_month_claims": 95.0,
+        "month_over_month_change": -17.0
+      },
+      {
+        "accident_month": "2023-08",
+        "claim_count": 94,
+        "prior_month_claims": 78.0,
+        "month_over_month_change": 16.0
+      }
+    ]
+  },
+  {
+    "id": "Q15",
+    "category": "Time trends",
+    "title": "Are claims more common on weekdays or weekends?",
+    "business_value": "Support staffing patterns without inferring causation.",
+    "sql": "SELECT CASE WHEN CAST(strftime('%w', AccidentDate) AS INTEGER) IN (0,6) THEN 'Weekend' ELSE 'Weekday' END AS day_type, COUNT(*) AS claim_count, ROUND(AVG(Actual_Repair_Cost_INR), 2) AS avg_cost_inr FROM telematics_claims GROUP BY day_type;",
+    "status": "PASS",
+    "row_count": 2,
+    "columns": [
+      "day_type",
+      "claim_count",
+      "avg_cost_inr"
+    ],
+    "preview": [
+      {
+        "day_type": "Weekday",
+        "claim_count": 2239,
+        "avg_cost_inr": 18139.71
+      },
+      {
+        "day_type": "Weekend",
+        "claim_count": 761,
+        "avg_cost_inr": 17304.47
+      }
+    ]
+  },
+  {
+    "id": "Q16",
+    "category": "Time trends",
+    "title": "At what hours are incidents most frequent?",
+    "business_value": "Understand simulated hour-of-day workload peaks.",
+    "sql": "SELECT CAST(strftime('%H', AccidentDate) AS INTEGER) AS accident_hour, COUNT(*) AS claim_count, ROUND(AVG(Actual_Repair_Cost_INR), 2) AS avg_cost_inr FROM telematics_claims GROUP BY accident_hour ORDER BY claim_count DESC;",
+    "status": "PASS",
+    "row_count": 24,
+    "columns": [
+      "accident_hour",
+      "claim_count",
+      "avg_cost_inr"
+    ],
+    "preview": [
+      {
+        "accident_hour": 17,
+        "claim_count": 257,
+        "avg_cost_inr": 19553.31
+      },
+      {
+        "accident_hour": 18,
+        "claim_count": 250,
+        "avg_cost_inr": 17548.8
+      },
+      {
+        "accident_hour": 15,
+        "claim_count": 230,
+        "avg_cost_inr": 18084.78
+      },
+      {
+        "accident_hour": 16,
+        "claim_count": 225,
+        "avg_cost_inr": 15463.56
+      },
+      {
+        "accident_hour": 19,
+        "claim_count": 200,
+        "avg_cost_inr": 15284.0
+      },
+      {
+        "accident_hour": 8,
+        "claim_count": 197,
+        "avg_cost_inr": 15121.83
+      },
+      {
+        "accident_hour": 20,
+        "claim_count": 180,
+        "avg_cost_inr": 20952.78
+      },
+      {
+        "accident_hour": 14,
+        "claim_count": 180,
+        "avg_cost_inr": 19629.44
+      }
+    ]
+  },
+  {
+    "id": "Q17",
+    "category": "Vehicle age",
+    "title": "How does vehicle age relate to repair cost?",
+    "business_value": "Segment cost patterns by vehicle age at incident time.",
+    "sql": "SELECT CASE WHEN CAST(strftime('%Y', AccidentDate) AS INTEGER) - Model_Year < 3 THEN '0-2 years' WHEN CAST(strftime('%Y', AccidentDate) AS INTEGER) - Model_Year < 7 THEN '3-6 years' WHEN CAST(strftime('%Y', AccidentDate) AS INTEGER) - Model_Year < 12 THEN '7-11 years' ELSE '12+ years' END AS vehicle_age_band, COUNT(*) AS claim_count, ROUND(AVG(Actual_Repair_Cost_INR), 2) AS avg_cost_inr FROM telematics_claims GROUP BY vehicle_age_band ORDER BY vehicle_age_band;",
+    "status": "PASS",
+    "row_count": 4,
+    "columns": [
+      "vehicle_age_band",
+      "claim_count",
+      "avg_cost_inr"
+    ],
+    "preview": [
+      {
+        "vehicle_age_band": "0-2 years",
+        "claim_count": 878,
+        "avg_cost_inr": 17754.33
+      },
+      {
+        "vehicle_age_band": "12+ years",
+        "claim_count": 83,
+        "avg_cost_inr": 10531.33
+      },
+      {
+        "vehicle_age_band": "3-6 years",
+        "claim_count": 1536,
+        "avg_cost_inr": 18087.76
+      },
+      {
+        "vehicle_age_band": "7-11 years",
+        "claim_count": 503,
+        "avg_cost_inr": 18962.82
+      }
+    ]
+  },
+  {
+    "id": "Q18",
+    "category": "Cost outliers",
+    "title": "What are the 15 most expensive claims?",
+    "business_value": "Create a review queue of highest-value repair events.",
+    "sql": "SELECT ClaimID, AccidentDate, Vehicle_Brand, Crash_Area, Speed_At_Impact_kmh, G_Force_Impact, Airbag_Deployed, Actual_Repair_Cost_INR FROM telematics_claims ORDER BY Actual_Repair_Cost_INR DESC LIMIT 15;",
+    "status": "PASS",
+    "row_count": 15,
+    "columns": [
+      "ClaimID",
+      "AccidentDate",
+      "Vehicle_Brand",
+      "Crash_Area",
+      "Speed_At_Impact_kmh",
+      "G_Force_Impact",
+      "Airbag_Deployed",
+      "Actual_Repair_Cost_INR"
+    ],
+    "preview": [
+      {
+        "ClaimID": "CLM0000754",
+        "AccidentDate": "2023-01-09 00:05:00",
+        "Vehicle_Brand": "Hyundai",
+        "Crash_Area": "Faridabad",
+        "Speed_At_Impact_kmh": 128.2,
+        "G_Force_Impact": 6.7,
+        "Airbag_Deployed": 1,
+        "Actual_Repair_Cost_INR": 549000
+      },
+      {
+        "ClaimID": "CLM0000353",
+        "AccidentDate": "2023-03-15 12:16:00",
+        "Vehicle_Brand": "Tata",
+        "Crash_Area": "Delhi",
+        "Speed_At_Impact_kmh": 138.1,
+        "G_Force_Impact": 6.97,
+        "Airbag_Deployed": 1,
+        "Actual_Repair_Cost_INR": 356700
+      },
+      {
+        "ClaimID": "CLM0000966",
+        "AccidentDate": "2023-10-22 13:02:00",
+        "Vehicle_Brand": "Hyundai",
+        "Crash_Area": "Delhi",
+        "Speed_At_Impact_kmh": 135.0,
+        "G_Force_Impact": 7.43,
+        "Airbag_Deployed": 1,
+        "Actual_Repair_Cost_INR": 273200
+      },
+      {
+        "ClaimID": "CLM0001036",
+        "AccidentDate": "2025-03-24 17:33:00",
+        "Vehicle_Brand": "Mahindra",
+        "Crash_Area": "Noida",
+        "Speed_At_Impact_kmh": 142.0,
+        "G_Force_Impact": 7.36,
+        "Airbag_Deployed": 1,
+        "Actual_Repair_Cost_INR": 269000
+      },
+      {
+        "ClaimID": "CLM0001624",
+        "AccidentDate": "2023-10-05 13:48:00",
+        "Vehicle_Brand": "Mercedes-Benz",
+        "Crash_Area": "Gurugram",
+        "Speed_At_Impact_kmh": 118.9,
+        "G_Force_Impact": 5.87,
+        "Airbag_Deployed": 1,
+        "Actual_Repair_Cost_INR": 247100
+      },
+      {
+        "ClaimID": "CLM0000304",
+        "AccidentDate": "2024-02-23 09:23:00",
+        "Vehicle_Brand": "Hyundai",
+        "Crash_Area": "Gurugram",
+        "Speed_At_Impact_kmh": 130.2,
+        "G_Force_Impact": 6.59,
+        "Airbag_Deployed": 1,
+        "Actual_Repair_Cost_INR": 239000
+      },
+      {
+        "ClaimID": "CLM0001345",
+        "AccidentDate": "2023-10-07 15:58:00",
+        "Vehicle_Brand": "Mahindra",
+        "Crash_Area": "Delhi",
+        "Speed_At_Impact_kmh": 90.8,
+        "G_Force_Impact": 3.98,
+        "Airbag_Deployed": 1,
+        "Actual_Repair_Cost_INR": 228800
+      },
+      {
+        "ClaimID": "CLM0000596",
+        "AccidentDate": "2023-03-07 10:52:00",
+        "Vehicle_Brand": "Kia",
+        "Crash_Area": "Noida",
+        "Speed_At_Impact_kmh": 132.9,
+        "G_Force_Impact": 5.89,
+        "Airbag_Deployed": 1,
+        "Actual_Repair_Cost_INR": 223700
+      }
+    ]
+  },
+  {
+    "id": "Q19",
+    "category": "Cost outliers",
+    "title": "Which claims are above average cost by more than two standard deviations?",
+    "business_value": "Illustrate a transparent statistical outlier rule.",
+    "sql": "WITH stats AS (SELECT AVG(Actual_Repair_Cost_INR) AS avg_cost, (AVG(Actual_Repair_Cost_INR * Actual_Repair_Cost_INR) - AVG(Actual_Repair_Cost_INR) * AVG(Actual_Repair_Cost_INR)) AS var_cost FROM telematics_claims) SELECT c.ClaimID, c.Vehicle_Brand, c.Speed_At_Impact_kmh, c.G_Force_Impact, c.Actual_Repair_Cost_INR, ROUND(s.avg_cost, 2) AS portfolio_avg_cost FROM telematics_claims c CROSS JOIN stats s WHERE c.Actual_Repair_Cost_INR > s.avg_cost + 2 * sqrt(MAX(s.var_cost, 0)) ORDER BY c.Actual_Repair_Cost_INR DESC;",
+    "status": "PASS",
+    "row_count": 113,
+    "columns": [
+      "ClaimID",
+      "Vehicle_Brand",
+      "Speed_At_Impact_kmh",
+      "G_Force_Impact",
+      "Actual_Repair_Cost_INR",
+      "portfolio_avg_cost"
+    ],
+    "preview": [
+      {
+        "ClaimID": "CLM0000754",
+        "Vehicle_Brand": "Hyundai",
+        "Speed_At_Impact_kmh": 128.2,
+        "G_Force_Impact": 6.7,
+        "Actual_Repair_Cost_INR": 549000,
+        "portfolio_avg_cost": 17927.83
+      },
+      {
+        "ClaimID": "CLM0000353",
+        "Vehicle_Brand": "Tata",
+        "Speed_At_Impact_kmh": 138.1,
+        "G_Force_Impact": 6.97,
+        "Actual_Repair_Cost_INR": 356700,
+        "portfolio_avg_cost": 17927.83
+      },
+      {
+        "ClaimID": "CLM0000966",
+        "Vehicle_Brand": "Hyundai",
+        "Speed_At_Impact_kmh": 135.0,
+        "G_Force_Impact": 7.43,
+        "Actual_Repair_Cost_INR": 273200,
+        "portfolio_avg_cost": 17927.83
+      },
+      {
+        "ClaimID": "CLM0001036",
+        "Vehicle_Brand": "Mahindra",
+        "Speed_At_Impact_kmh": 142.0,
+        "G_Force_Impact": 7.36,
+        "Actual_Repair_Cost_INR": 269000,
+        "portfolio_avg_cost": 17927.83
+      },
+      {
+        "ClaimID": "CLM0001624",
+        "Vehicle_Brand": "Mercedes-Benz",
+        "Speed_At_Impact_kmh": 118.9,
+        "G_Force_Impact": 5.87,
+        "Actual_Repair_Cost_INR": 247100,
+        "portfolio_avg_cost": 17927.83
+      },
+      {
+        "ClaimID": "CLM0000304",
+        "Vehicle_Brand": "Hyundai",
+        "Speed_At_Impact_kmh": 130.2,
+        "G_Force_Impact": 6.59,
+        "Actual_Repair_Cost_INR": 239000,
+        "portfolio_avg_cost": 17927.83
+      },
+      {
+        "ClaimID": "CLM0001345",
+        "Vehicle_Brand": "Mahindra",
+        "Speed_At_Impact_kmh": 90.8,
+        "G_Force_Impact": 3.98,
+        "Actual_Repair_Cost_INR": 228800,
+        "portfolio_avg_cost": 17927.83
+      },
+      {
+        "ClaimID": "CLM0000596",
+        "Vehicle_Brand": "Kia",
+        "Speed_At_Impact_kmh": 132.9,
+        "G_Force_Impact": 5.89,
+        "Actual_Repair_Cost_INR": 223700,
+        "portfolio_avg_cost": 17927.83
+      }
+    ]
+  },
+  {
+    "id": "Q20",
+    "category": "Vehicle patterns",
+    "title": "Which vehicles have the most recorded incidents?",
+    "business_value": "Identify repeated synthetic VehicleID appearances for further context.",
+    "sql": "SELECT VehicleID, COUNT(*) AS incident_count, ROUND(SUM(Actual_Repair_Cost_INR), 2) AS total_repair_cost_inr, ROUND(AVG(Actual_Repair_Cost_INR), 2) AS avg_repair_cost_inr FROM telematics_claims GROUP BY VehicleID HAVING COUNT(*) > 1 ORDER BY incident_count DESC, total_repair_cost_inr DESC LIMIT 20;",
+    "status": "PASS",
+    "row_count": 20,
+    "columns": [
+      "VehicleID",
+      "incident_count",
+      "total_repair_cost_inr",
+      "avg_repair_cost_inr"
+    ],
+    "preview": [
+      {
+        "VehicleID": "VEH000029",
+        "incident_count": 6,
+        "total_repair_cost_inr": 142300.0,
+        "avg_repair_cost_inr": 23716.67
+      },
+      {
+        "VehicleID": "VEH000056",
+        "incident_count": 6,
+        "total_repair_cost_inr": 41100.0,
+        "avg_repair_cost_inr": 6850.0
+      },
+      {
+        "VehicleID": "VEH000047",
+        "incident_count": 6,
+        "total_repair_cost_inr": 38800.0,
+        "avg_repair_cost_inr": 6466.67
+      },
+      {
+        "VehicleID": "VEH000004",
+        "incident_count": 5,
+        "total_repair_cost_inr": 176700.0,
+        "avg_repair_cost_inr": 35340.0
+      },
+      {
+        "VehicleID": "VEH000030",
+        "incident_count": 5,
+        "total_repair_cost_inr": 71000.0,
+        "avg_repair_cost_inr": 14200.0
+      },
+      {
+        "VehicleID": "VEH000034",
+        "incident_count": 5,
+        "total_repair_cost_inr": 69900.0,
+        "avg_repair_cost_inr": 13980.0
+      },
+      {
+        "VehicleID": "VEH000045",
+        "incident_count": 5,
+        "total_repair_cost_inr": 64800.0,
+        "avg_repair_cost_inr": 12960.0
+      },
+      {
+        "VehicleID": "VEH000001",
+        "incident_count": 4,
+        "total_repair_cost_inr": 113900.0,
+        "avg_repair_cost_inr": 28475.0
+      }
+    ]
+  },
+  {
+    "id": "Q21",
+    "category": "Vehicle patterns",
+    "title": "What is the average cost for repeat versus single-incident vehicles?",
+    "business_value": "Compare groups while noting repeat identity is simulated.",
+    "sql": "WITH vehicle_counts AS (SELECT VehicleID, COUNT(*) AS claim_count FROM telematics_claims GROUP BY VehicleID) SELECT CASE WHEN v.claim_count > 1 THEN 'Repeat vehicle' ELSE 'Single recorded incident' END AS vehicle_group, COUNT(*) AS claims, ROUND(AVG(c.Actual_Repair_Cost_INR), 2) AS avg_cost_inr FROM telematics_claims c JOIN vehicle_counts v ON c.VehicleID = v.VehicleID GROUP BY vehicle_group;",
+    "status": "PASS",
+    "row_count": 2,
+    "columns": [
+      "vehicle_group",
+      "claims",
+      "avg_cost_inr"
+    ],
+    "preview": [
+      {
+        "vehicle_group": "Repeat vehicle",
+        "claims": 166,
+        "avg_cost_inr": 17395.78
+      },
+      {
+        "vehicle_group": "Single recorded incident",
+        "claims": 2834,
+        "avg_cost_inr": 17959.0
+      }
+    ]
+  },
+  {
+    "id": "Q22",
+    "category": "Crash severity",
+    "title": "How is crash severity distributed by brand?",
+    "business_value": "Separate brand volume from severity mix.",
+    "sql": "SELECT Vehicle_Brand, CASE WHEN Speed_At_Impact_kmh < 25 THEN 'Low' WHEN Speed_At_Impact_kmh < 50 THEN 'Moderate' WHEN Speed_At_Impact_kmh < 80 THEN 'High' ELSE 'Very high' END AS severity_band, COUNT(*) AS claim_count FROM telematics_claims GROUP BY Vehicle_Brand, severity_band ORDER BY Vehicle_Brand, claim_count DESC;",
+    "status": "PASS",
+    "row_count": 48,
+    "columns": [
+      "Vehicle_Brand",
+      "severity_band",
+      "claim_count"
+    ],
+    "preview": [
+      {
+        "Vehicle_Brand": "BMW",
+        "severity_band": "Low",
+        "claim_count": 15
+      },
+      {
+        "Vehicle_Brand": "BMW",
+        "severity_band": "Moderate",
+        "claim_count": 5
+      },
+      {
+        "Vehicle_Brand": "BMW",
+        "severity_band": "Very high",
+        "claim_count": 2
+      },
+      {
+        "Vehicle_Brand": "BMW",
+        "severity_band": "High",
+        "claim_count": 1
+      },
+      {
+        "Vehicle_Brand": "Honda",
+        "severity_band": "Low",
+        "claim_count": 166
+      },
+      {
+        "Vehicle_Brand": "Honda",
+        "severity_band": "Moderate",
+        "claim_count": 64
+      },
+      {
+        "Vehicle_Brand": "Honda",
+        "severity_band": "High",
+        "claim_count": 38
+      },
+      {
+        "Vehicle_Brand": "Honda",
+        "severity_band": "Very high",
+        "claim_count": 10
+      }
+    ]
+  },
+  {
+    "id": "Q23",
+    "category": "Crash severity",
+    "title": "How does airbag deployment rate vary by speed band?",
+    "business_value": "Check whether the generated safety signal behaves plausibly.",
+    "sql": "SELECT CASE WHEN Speed_At_Impact_kmh < 25 THEN 'Low (<25)' WHEN Speed_At_Impact_kmh < 50 THEN 'Moderate (25-49)' WHEN Speed_At_Impact_kmh < 80 THEN 'High (50-79)' ELSE 'Very high (80+)' END AS speed_band, COUNT(*) AS claim_count, ROUND(100.0 * AVG(Airbag_Deployed), 2) AS airbag_deployment_pct FROM telematics_claims GROUP BY speed_band ORDER BY speed_band;",
+    "status": "PASS",
+    "row_count": 4,
+    "columns": [
+      "speed_band",
+      "claim_count",
+      "airbag_deployment_pct"
+    ],
+    "preview": [
+      {
+        "speed_band": "High (50-79)",
+        "claim_count": 399,
+        "airbag_deployment_pct": 11.53
+      },
+      {
+        "speed_band": "Low (<25)",
+        "claim_count": 1654,
+        "airbag_deployment_pct": 0.85
+      },
+      {
+        "speed_band": "Moderate (25-49)",
+        "claim_count": 750,
+        "airbag_deployment_pct": 3.6
+      },
+      {
+        "speed_band": "Very high (80+)",
+        "claim_count": 197,
+        "airbag_deployment_pct": 43.15
+      }
+    ]
+  },
+  {
+    "id": "Q24",
+    "category": "Crash severity",
+    "title": "What are average speed and costs by impact point?",
+    "business_value": "Compare the mix of impact zones and associated loss amounts.",
+    "sql": "SELECT Impact_Point, COUNT(*) AS claim_count, ROUND(AVG(Speed_At_Impact_kmh), 2) AS avg_speed_kmh, ROUND(AVG(G_Force_Impact), 2) AS avg_g_force, ROUND(AVG(Actual_Repair_Cost_INR), 2) AS avg_cost_inr FROM telematics_claims GROUP BY Impact_Point ORDER BY avg_speed_kmh DESC;",
+    "status": "PASS",
+    "row_count": 3,
+    "columns": [
+      "Impact_Point",
+      "claim_count",
+      "avg_speed_kmh",
+      "avg_g_force",
+      "avg_cost_inr"
+    ],
+    "preview": [
+      {
+        "Impact_Point": "Side",
+        "claim_count": 836,
+        "avg_speed_kmh": 31.34,
+        "avg_g_force": 1.44,
+        "avg_cost_inr": 18836.96
+      },
+      {
+        "Impact_Point": "Front",
+        "claim_count": 1446,
+        "avg_speed_kmh": 29.95,
+        "avg_g_force": 1.37,
+        "avg_cost_inr": 19603.11
+      },
+      {
+        "Impact_Point": "Rear",
+        "claim_count": 718,
+        "avg_speed_kmh": 29.6,
+        "avg_g_force": 1.35,
+        "avg_cost_inr": 13495.4
+      }
+    ]
+  },
+  {
+    "id": "Q25",
+    "category": "Crash severity",
+    "title": "How do costs vary across speed quartiles?",
+    "business_value": "Compare relative cost progression using NTILE windowing.",
+    "sql": "WITH bands AS (SELECT *, NTILE(4) OVER (ORDER BY Speed_At_Impact_kmh) AS speed_quartile FROM telematics_claims) SELECT speed_quartile, COUNT(*) AS claim_count, ROUND(MIN(Speed_At_Impact_kmh), 2) AS min_speed, ROUND(MAX(Speed_At_Impact_kmh), 2) AS max_speed, ROUND(AVG(Actual_Repair_Cost_INR), 2) AS avg_cost_inr FROM bands GROUP BY speed_quartile ORDER BY speed_quartile;",
+    "status": "PASS",
+    "row_count": 4,
+    "columns": [
+      "speed_quartile",
+      "claim_count",
+      "min_speed",
+      "max_speed",
+      "avg_cost_inr"
+    ],
+    "preview": [
+      {
+        "speed_quartile": 1,
+        "claim_count": 750,
+        "min_speed": 1.1,
+        "max_speed": 9.6,
+        "avg_cost_inr": 3747.2
+      },
+      {
+        "speed_quartile": 2,
+        "claim_count": 750,
+        "min_speed": 9.6,
+        "max_speed": 18.6,
+        "avg_cost_inr": 5456.0
+      },
+      {
+        "speed_quartile": 3,
+        "claim_count": 750,
+        "min_speed": 18.6,
+        "max_speed": 45.0,
+        "avg_cost_inr": 13990.13
+      },
+      {
+        "speed_quartile": 4,
+        "claim_count": 750,
+        "min_speed": 45.1,
+        "max_speed": 142.0,
+        "avg_cost_inr": 48518.0
+      }
+    ]
+  },
+  {
+    "id": "Q26",
+    "category": "Crash severity",
+    "title": "Which features accompany the highest repair costs?",
+    "business_value": "Summarize severity indicators alongside claim cost.",
+    "sql": "SELECT CASE WHEN Airbag_Deployed = 1 THEN 'Airbag deployed' ELSE 'No airbag deployment' END AS airbag_status, Impact_Point, COUNT(*) AS claim_count, ROUND(AVG(Speed_At_Impact_kmh), 2) AS avg_speed_kmh, ROUND(AVG(G_Force_Impact), 2) AS avg_g_force, ROUND(AVG(Actual_Repair_Cost_INR), 2) AS avg_cost_inr FROM telematics_claims GROUP BY airbag_status, Impact_Point ORDER BY avg_cost_inr DESC;",
+    "status": "PASS",
+    "row_count": 6,
+    "columns": [
+      "airbag_status",
+      "Impact_Point",
+      "claim_count",
+      "avg_speed_kmh",
+      "avg_g_force",
+      "avg_cost_inr"
+    ],
+    "preview": [
+      {
+        "airbag_status": "Airbag deployed",
+        "Impact_Point": "Front",
+        "claim_count": 96,
+        "avg_speed_kmh": 74.97,
+        "avg_g_force": 3.43,
+        "avg_cost_inr": 89394.79
+      },
+      {
+        "airbag_status": "Airbag deployed",
+        "Impact_Point": "Side",
+        "claim_count": 44,
+        "avg_speed_kmh": 82.28,
+        "avg_g_force": 3.82,
+        "avg_cost_inr": 88352.27
+      },
+      {
+        "airbag_status": "Airbag deployed",
+        "Impact_Point": "Rear",
+        "claim_count": 32,
+        "avg_speed_kmh": 78.07,
+        "avg_g_force": 3.53,
+        "avg_cost_inr": 67450.0
+      },
+      {
+        "airbag_status": "No airbag deployment",
+        "Impact_Point": "Side",
+        "claim_count": 792,
+        "avg_speed_kmh": 28.51,
+        "avg_g_force": 1.31,
+        "avg_cost_inr": 14975.0
+      },
+      {
+        "airbag_status": "No airbag deployment",
+        "Impact_Point": "Front",
+        "claim_count": 1350,
+        "avg_speed_kmh": 26.75,
+        "avg_g_force": 1.23,
+        "avg_cost_inr": 14640.15
+      },
+      {
+        "airbag_status": "No airbag deployment",
+        "Impact_Point": "Rear",
+        "claim_count": 686,
+        "avg_speed_kmh": 27.34,
+        "avg_g_force": 1.25,
+        "avg_cost_inr": 10978.57
+      }
+    ]
+  },
+  {
+    "id": "Q27",
+    "category": "Cost distribution",
+    "title": "What is the repair-cost distribution by percentile group?",
+    "business_value": "Expose long-tail cost behavior rather than relying only on averages.",
+    "sql": "WITH ranked AS (SELECT Actual_Repair_Cost_INR, NTILE(10) OVER (ORDER BY Actual_Repair_Cost_INR) AS cost_decile FROM telematics_claims) SELECT cost_decile, COUNT(*) AS claim_count, ROUND(MIN(Actual_Repair_Cost_INR), 2) AS min_cost_inr, ROUND(MAX(Actual_Repair_Cost_INR), 2) AS max_cost_inr, ROUND(AVG(Actual_Repair_Cost_INR), 2) AS avg_cost_inr FROM ranked GROUP BY cost_decile ORDER BY cost_decile;",
+    "status": "PASS",
+    "row_count": 10,
+    "columns": [
+      "cost_decile",
+      "claim_count",
+      "min_cost_inr",
+      "max_cost_inr",
+      "avg_cost_inr"
+    ],
+    "preview": [
+      {
+        "cost_decile": 1,
+        "claim_count": 300,
+        "min_cost_inr": 1800.0,
+        "max_cost_inr": 2800.0,
+        "avg_cost_inr": 2254.0
+      },
+      {
+        "cost_decile": 2,
+        "claim_count": 300,
+        "min_cost_inr": 2800.0,
+        "max_cost_inr": 3600.0,
+        "avg_cost_inr": 3197.67
+      },
+      {
+        "cost_decile": 3,
+        "claim_count": 300,
+        "min_cost_inr": 3600.0,
+        "max_cost_inr": 4400.0,
+        "avg_cost_inr": 3972.0
+      },
+      {
+        "cost_decile": 4,
+        "claim_count": 300,
+        "min_cost_inr": 4400.0,
+        "max_cost_inr": 5700.0,
+        "avg_cost_inr": 5047.0
+      },
+      {
+        "cost_decile": 5,
+        "claim_count": 300,
+        "min_cost_inr": 5700.0,
+        "max_cost_inr": 7600.0,
+        "avg_cost_inr": 6594.33
+      },
+      {
+        "cost_decile": 6,
+        "claim_count": 300,
+        "min_cost_inr": 7600.0,
+        "max_cost_inr": 11300.0,
+        "avg_cost_inr": 9215.33
+      },
+      {
+        "cost_decile": 7,
+        "claim_count": 300,
+        "min_cost_inr": 11300.0,
+        "max_cost_inr": 16500.0,
+        "avg_cost_inr": 13744.33
+      },
+      {
+        "cost_decile": 8,
+        "claim_count": 300,
+        "min_cost_inr": 16500.0,
+        "max_cost_inr": 24900.0,
+        "avg_cost_inr": 20388.0
+      }
+    ]
+  },
+  {
+    "id": "Q28",
+    "category": "Time trends",
+    "title": "How do claim volume and average cost change by quarter?",
+    "business_value": "Provide a quarterly view for staffing and trend discussion.",
+    "sql": "SELECT strftime('%Y', AccidentDate) AS accident_year, CAST((CAST(strftime('%m', AccidentDate) AS INTEGER) + 2) / 3 AS INTEGER) AS accident_quarter, COUNT(*) AS claim_count, ROUND(AVG(Actual_Repair_Cost_INR), 2) AS avg_cost_inr, ROUND(SUM(Actual_Repair_Cost_INR), 2) AS total_cost_inr FROM telematics_claims GROUP BY accident_year, accident_quarter ORDER BY accident_year, accident_quarter;",
+    "status": "PASS",
+    "row_count": 12,
+    "columns": [
+      "accident_year",
+      "accident_quarter",
+      "claim_count",
+      "avg_cost_inr",
+      "total_cost_inr"
+    ],
+    "preview": [
+      {
+        "accident_year": "2023",
+        "accident_quarter": 1,
+        "claim_count": 271,
+        "avg_cost_inr": 20421.03,
+        "total_cost_inr": 5534100.0
+      },
+      {
+        "accident_year": "2023",
+        "accident_quarter": 2,
+        "claim_count": 254,
+        "avg_cost_inr": 18628.35,
+        "total_cost_inr": 4731600.0
+      },
+      {
+        "accident_year": "2023",
+        "accident_quarter": 3,
+        "claim_count": 251,
+        "avg_cost_inr": 18299.6,
+        "total_cost_inr": 4593200.0
+      },
+      {
+        "accident_year": "2023",
+        "accident_quarter": 4,
+        "claim_count": 235,
+        "avg_cost_inr": 20808.94,
+        "total_cost_inr": 4890100.0
+      },
+      {
+        "accident_year": "2024",
+        "accident_quarter": 1,
+        "claim_count": 267,
+        "avg_cost_inr": 18889.51,
+        "total_cost_inr": 5043500.0
+      },
+      {
+        "accident_year": "2024",
+        "accident_quarter": 2,
+        "claim_count": 262,
+        "avg_cost_inr": 16707.63,
+        "total_cost_inr": 4377400.0
+      },
+      {
+        "accident_year": "2024",
+        "accident_quarter": 3,
+        "claim_count": 257,
+        "avg_cost_inr": 17131.91,
+        "total_cost_inr": 4402900.0
+      },
+      {
+        "accident_year": "2024",
+        "accident_quarter": 4,
+        "claim_count": 228,
+        "avg_cost_inr": 19782.46,
+        "total_cost_inr": 4510400.0
+      }
+    ]
+  },
+  {
+    "id": "Q29",
+    "category": "Time trends",
+    "title": "Are weekend incidents more expensive after grouping by impact point?",
+    "business_value": "Check whether a simple aggregate is being driven by crash mix.",
+    "sql": "SELECT CASE WHEN CAST(strftime('%w', AccidentDate) AS INTEGER) IN (0,6) THEN 'Weekend' ELSE 'Weekday' END AS day_type, Impact_Point, COUNT(*) AS claim_count, ROUND(AVG(Actual_Repair_Cost_INR), 2) AS avg_cost_inr FROM telematics_claims GROUP BY day_type, Impact_Point ORDER BY day_type, avg_cost_inr DESC;",
+    "status": "PASS",
+    "row_count": 6,
+    "columns": [
+      "day_type",
+      "Impact_Point",
+      "claim_count",
+      "avg_cost_inr"
+    ],
+    "preview": [
+      {
+        "day_type": "Weekday",
+        "Impact_Point": "Front",
+        "claim_count": 1076,
+        "avg_cost_inr": 19873.61
+      },
+      {
+        "day_type": "Weekday",
+        "Impact_Point": "Side",
+        "claim_count": 633,
+        "avg_cost_inr": 18473.93
+      },
+      {
+        "day_type": "Weekday",
+        "Impact_Point": "Rear",
+        "claim_count": 530,
+        "avg_cost_inr": 14220.38
+      },
+      {
+        "day_type": "Weekend",
+        "Impact_Point": "Side",
+        "claim_count": 203,
+        "avg_cost_inr": 19968.97
+      },
+      {
+        "day_type": "Weekend",
+        "Impact_Point": "Front",
+        "claim_count": 370,
+        "avg_cost_inr": 18816.49
+      },
+      {
+        "day_type": "Weekend",
+        "Impact_Point": "Rear",
+        "claim_count": 188,
+        "avg_cost_inr": 11451.6
+      }
+    ]
+  },
+  {
+    "id": "Q30",
+    "category": "Vehicle age",
+    "title": "What are claim counts and costs by vehicle-age band and brand?",
+    "business_value": "Support segment-specific repair-cost benchmarking.",
+    "sql": "SELECT Vehicle_Brand, CASE WHEN CAST(strftime('%Y', AccidentDate) AS INTEGER) - Model_Year < 3 THEN '0-2 years' WHEN CAST(strftime('%Y', AccidentDate) AS INTEGER) - Model_Year < 7 THEN '3-6 years' WHEN CAST(strftime('%Y', AccidentDate) AS INTEGER) - Model_Year < 12 THEN '7-11 years' ELSE '12+ years' END AS vehicle_age_band, COUNT(*) AS claim_count, ROUND(AVG(Actual_Repair_Cost_INR), 2) AS avg_cost_inr FROM telematics_claims GROUP BY Vehicle_Brand, vehicle_age_band HAVING COUNT(*) >= 5 ORDER BY Vehicle_Brand, avg_cost_inr DESC;",
+    "status": "PASS",
+    "row_count": 42,
+    "columns": [
+      "Vehicle_Brand",
+      "vehicle_age_band",
+      "claim_count",
+      "avg_cost_inr"
+    ],
+    "preview": [
+      {
+        "Vehicle_Brand": "BMW",
+        "vehicle_age_band": "7-11 years",
+        "claim_count": 5,
+        "avg_cost_inr": 49400.0
+      },
+      {
+        "Vehicle_Brand": "BMW",
+        "vehicle_age_band": "0-2 years",
+        "claim_count": 10,
+        "avg_cost_inr": 21260.0
+      },
+      {
+        "Vehicle_Brand": "BMW",
+        "vehicle_age_band": "3-6 years",
+        "claim_count": 8,
+        "avg_cost_inr": 21175.0
+      },
+      {
+        "Vehicle_Brand": "Honda",
+        "vehicle_age_band": "3-6 years",
+        "claim_count": 144,
+        "avg_cost_inr": 17172.22
+      },
+      {
+        "Vehicle_Brand": "Honda",
+        "vehicle_age_band": "7-11 years",
+        "claim_count": 42,
+        "avg_cost_inr": 15245.24
+      },
+      {
+        "Vehicle_Brand": "Honda",
+        "vehicle_age_band": "0-2 years",
+        "claim_count": 86,
+        "avg_cost_inr": 13594.19
+      },
+      {
+        "Vehicle_Brand": "Honda",
+        "vehicle_age_band": "12+ years",
+        "claim_count": 6,
+        "avg_cost_inr": 5400.0
+      },
+      {
+        "Vehicle_Brand": "Hyundai",
+        "vehicle_age_band": "7-11 years",
+        "claim_count": 97,
+        "avg_cost_inr": 23921.65
+      }
+    ]
+  },
+  {
+    "id": "Q31",
+    "category": "Garage network",
+    "title": "How many garages specialize in each vehicle brand?",
+    "business_value": "Measure supply depth by make.",
+    "sql": "SELECT Brand_Specialization AS Vehicle_Brand, COUNT(*) AS garage_count, SUM(CASE WHEN Parts_Available = 1 THEN 1 ELSE 0 END) AS in_stock_garages, SUM(CASE WHEN Preferred_Partner = 1 THEN 1 ELSE 0 END) AS preferred_garages FROM partner_garages GROUP BY Brand_Specialization ORDER BY garage_count DESC;",
+    "status": "PASS",
+    "row_count": 12,
+    "columns": [
+      "Vehicle_Brand",
+      "garage_count",
+      "in_stock_garages",
+      "preferred_garages"
+    ],
+    "preview": [
+      {
+        "Vehicle_Brand": "Hyundai",
+        "garage_count": 20,
+        "in_stock_garages": 15,
+        "preferred_garages": 12
+      },
+      {
+        "Vehicle_Brand": "Maruti Suzuki",
+        "garage_count": 20,
+        "in_stock_garages": 20,
+        "preferred_garages": 15
+      },
+      {
+        "Vehicle_Brand": "Honda",
+        "garage_count": 10,
+        "in_stock_garages": 8,
+        "preferred_garages": 6
+      },
+      {
+        "Vehicle_Brand": "Kia",
+        "garage_count": 10,
+        "in_stock_garages": 10,
+        "preferred_garages": 4
+      },
+      {
+        "Vehicle_Brand": "Mahindra",
+        "garage_count": 8,
+        "in_stock_garages": 7,
+        "preferred_garages": 7
+      },
+      {
+        "Vehicle_Brand": "Tata",
+        "garage_count": 7,
+        "in_stock_garages": 7,
+        "preferred_garages": 7
+      },
+      {
+        "Vehicle_Brand": "Toyota",
+        "garage_count": 7,
+        "in_stock_garages": 5,
+        "preferred_garages": 7
+      },
+      {
+        "Vehicle_Brand": "Renault",
+        "garage_count": 5,
+        "in_stock_garages": 2,
+        "preferred_garages": 2
+      }
+    ]
+  },
+  {
+    "id": "Q32",
+    "category": "Garage network",
+    "title": "What is parts availability by brand?",
+    "business_value": "Identify makes where routing choices may be constrained.",
+    "sql": "SELECT Brand_Specialization AS Vehicle_Brand, COUNT(*) AS garage_count, ROUND(100.0 * AVG(CASE WHEN Parts_Available = 1 THEN 1.0 ELSE 0.0 END), 2) AS in_stock_pct, SUM(CASE WHEN Parts_Available = 0 THEN 1 ELSE 0 END) AS out_of_stock_garages FROM partner_garages GROUP BY Brand_Specialization ORDER BY in_stock_pct;",
+    "status": "PASS",
+    "row_count": 12,
+    "columns": [
+      "Vehicle_Brand",
+      "garage_count",
+      "in_stock_pct",
+      "out_of_stock_garages"
+    ],
+    "preview": [
+      {
+        "Vehicle_Brand": "Renault",
+        "garage_count": 5,
+        "in_stock_pct": 40.0,
+        "out_of_stock_garages": 3
+      },
+      {
+        "Vehicle_Brand": "Skoda",
+        "garage_count": 4,
+        "in_stock_pct": 50.0,
+        "out_of_stock_garages": 2
+      },
+      {
+        "Vehicle_Brand": "BMW",
+        "garage_count": 3,
+        "in_stock_pct": 66.67,
+        "out_of_stock_garages": 1
+      },
+      {
+        "Vehicle_Brand": "Volkswagen",
+        "garage_count": 3,
+        "in_stock_pct": 66.67,
+        "out_of_stock_garages": 1
+      },
+      {
+        "Vehicle_Brand": "Toyota",
+        "garage_count": 7,
+        "in_stock_pct": 71.43,
+        "out_of_stock_garages": 2
+      },
+      {
+        "Vehicle_Brand": "Hyundai",
+        "garage_count": 20,
+        "in_stock_pct": 75.0,
+        "out_of_stock_garages": 5
+      },
+      {
+        "Vehicle_Brand": "Honda",
+        "garage_count": 10,
+        "in_stock_pct": 80.0,
+        "out_of_stock_garages": 2
+      },
+      {
+        "Vehicle_Brand": "Mahindra",
+        "garage_count": 8,
+        "in_stock_pct": 87.5,
+        "out_of_stock_garages": 1
+      }
+    ]
+  },
+  {
+    "id": "Q33",
+    "category": "Garage network",
+    "title": "Which areas have the largest preferred-partner share?",
+    "business_value": "Review network composition by area.",
+    "sql": "SELECT Area, COUNT(*) AS garage_count, SUM(CASE WHEN Preferred_Partner = 1 THEN 1 ELSE 0 END) AS preferred_count, ROUND(100.0 * AVG(CASE WHEN Preferred_Partner = 1 THEN 1.0 ELSE 0.0 END), 2) AS preferred_share_pct FROM partner_garages GROUP BY Area ORDER BY preferred_share_pct DESC;",
+    "status": "PASS",
+    "row_count": 5,
+    "columns": [
+      "Area",
+      "garage_count",
+      "preferred_count",
+      "preferred_share_pct"
+    ],
+    "preview": [
+      {
+        "Area": "Gurugram",
+        "garage_count": 30,
+        "preferred_count": 22,
+        "preferred_share_pct": 73.33
+      },
+      {
+        "Area": "Noida",
+        "garage_count": 22,
+        "preferred_count": 16,
+        "preferred_share_pct": 72.73
+      },
+      {
+        "Area": "Delhi",
+        "garage_count": 32,
+        "preferred_count": 23,
+        "preferred_share_pct": 71.88
+      },
+      {
+        "Area": "Ghaziabad",
+        "garage_count": 9,
+        "preferred_count": 4,
+        "preferred_share_pct": 44.44
+      },
+      {
+        "Area": "Faridabad",
+        "garage_count": 7,
+        "preferred_count": 3,
+        "preferred_share_pct": 42.86
+      }
+    ]
+  },
+  {
+    "id": "Q34",
+    "category": "Garage network",
+    "title": "Which areas have the greatest daily service capacity?",
+    "business_value": "Compare total intake capacity across simulated service areas.",
+    "sql": "SELECT Area, COUNT(*) AS garage_count, SUM(Daily_Service_Capacity) AS total_daily_capacity, ROUND(AVG(Daily_Service_Capacity), 1) AS avg_capacity_per_garage FROM partner_garages GROUP BY Area ORDER BY total_daily_capacity DESC;",
+    "status": "PASS",
+    "row_count": 5,
+    "columns": [
+      "Area",
+      "garage_count",
+      "total_daily_capacity",
+      "avg_capacity_per_garage"
+    ],
+    "preview": [
+      {
+        "Area": "Gurugram",
+        "garage_count": 30,
+        "total_daily_capacity": 513,
+        "avg_capacity_per_garage": 17.1
+      },
+      {
+        "Area": "Delhi",
+        "garage_count": 32,
+        "total_daily_capacity": 473,
+        "avg_capacity_per_garage": 14.8
+      },
+      {
+        "Area": "Noida",
+        "garage_count": 22,
+        "total_daily_capacity": 404,
+        "avg_capacity_per_garage": 18.4
+      },
+      {
+        "Area": "Ghaziabad",
+        "garage_count": 9,
+        "total_daily_capacity": 140,
+        "avg_capacity_per_garage": 15.6
+      },
+      {
+        "Area": "Faridabad",
+        "garage_count": 7,
+        "total_daily_capacity": 83,
+        "avg_capacity_per_garage": 11.9
+      }
+    ]
+  },
+  {
+    "id": "Q35",
+    "category": "Garage network",
+    "title": "Which garage-specialization groups have longer turnaround?",
+    "business_value": "Find potential cycle-time bottlenecks in the simulated network.",
+    "sql": "SELECT Brand_Specialization AS Vehicle_Brand, COUNT(*) AS garage_count, ROUND(AVG(Avg_Repair_Turnaround_Days), 2) AS avg_turnaround_days, ROUND(MIN(Avg_Repair_Turnaround_Days), 2) AS min_turnaround_days, ROUND(MAX(Avg_Repair_Turnaround_Days), 2) AS max_turnaround_days FROM partner_garages GROUP BY Brand_Specialization ORDER BY avg_turnaround_days DESC;",
+    "status": "PASS",
+    "row_count": 12,
+    "columns": [
+      "Vehicle_Brand",
+      "garage_count",
+      "avg_turnaround_days",
+      "min_turnaround_days",
+      "max_turnaround_days"
+    ],
+    "preview": [
+      {
+        "Vehicle_Brand": "Renault",
+        "garage_count": 5,
+        "avg_turnaround_days": 4.76,
+        "min_turnaround_days": 1.8,
+        "max_turnaround_days": 8.6
+      },
+      {
+        "Vehicle_Brand": "Mahindra",
+        "garage_count": 8,
+        "avg_turnaround_days": 3.56,
+        "min_turnaround_days": 1.4,
+        "max_turnaround_days": 5.9
+      },
+      {
+        "Vehicle_Brand": "Tata",
+        "garage_count": 7,
+        "avg_turnaround_days": 3.39,
+        "min_turnaround_days": 1.2,
+        "max_turnaround_days": 5.3
+      },
+      {
+        "Vehicle_Brand": "Hyundai",
+        "garage_count": 20,
+        "avg_turnaround_days": 3.36,
+        "min_turnaround_days": 0.5,
+        "max_turnaround_days": 9.0
+      },
+      {
+        "Vehicle_Brand": "Volkswagen",
+        "garage_count": 3,
+        "avg_turnaround_days": 3.33,
+        "min_turnaround_days": 1.9,
+        "max_turnaround_days": 6.2
+      },
+      {
+        "Vehicle_Brand": "Skoda",
+        "garage_count": 4,
+        "avg_turnaround_days": 3.27,
+        "min_turnaround_days": 1.5,
+        "max_turnaround_days": 5.5
+      },
+      {
+        "Vehicle_Brand": "Mercedes-Benz",
+        "garage_count": 3,
+        "avg_turnaround_days": 3.0,
+        "min_turnaround_days": 1.1,
+        "max_turnaround_days": 5.7
+      },
+      {
+        "Vehicle_Brand": "Honda",
+        "garage_count": 10,
+        "avg_turnaround_days": 2.89,
+        "min_turnaround_days": 1.6,
+        "max_turnaround_days": 6.3
+      }
+    ]
+  },
+  {
+    "id": "Q36",
+    "category": "Garage network",
+    "title": "How do simulated labor rates vary by area?",
+    "business_value": "Review cost-of-service differences in the garage network.",
+    "sql": "SELECT Area, COUNT(*) AS garage_count, ROUND(AVG(Labor_Rate_INR_Per_Hour), 2) AS avg_labor_rate_inr_hour, MIN(Labor_Rate_INR_Per_Hour) AS min_labor_rate, MAX(Labor_Rate_INR_Per_Hour) AS max_labor_rate FROM partner_garages GROUP BY Area ORDER BY avg_labor_rate_inr_hour DESC;",
+    "status": "PASS",
+    "row_count": 5,
+    "columns": [
+      "Area",
+      "garage_count",
+      "avg_labor_rate_inr_hour",
+      "min_labor_rate",
+      "max_labor_rate"
+    ],
+    "preview": [
+      {
+        "Area": "Gurugram",
+        "garage_count": 30,
+        "avg_labor_rate_inr_hour": 1046.93,
+        "min_labor_rate": 825,
+        "max_labor_rate": 1287
+      },
+      {
+        "Area": "Delhi",
+        "garage_count": 32,
+        "avg_labor_rate_inr_hour": 933.31,
+        "min_labor_rate": 689,
+        "max_labor_rate": 1288
+      },
+      {
+        "Area": "Noida",
+        "garage_count": 22,
+        "avg_labor_rate_inr_hour": 924.5,
+        "min_labor_rate": 715,
+        "max_labor_rate": 1318
+      },
+      {
+        "Area": "Ghaziabad",
+        "garage_count": 9,
+        "avg_labor_rate_inr_hour": 773.89,
+        "min_labor_rate": 675,
+        "max_labor_rate": 963
+      },
+      {
+        "Area": "Faridabad",
+        "garage_count": 7,
+        "avg_labor_rate_inr_hour": 755.43,
+        "min_labor_rate": 723,
+        "max_labor_rate": 785
+      }
+    ]
+  },
+  {
+    "id": "Q37",
+    "category": "Garage network",
+    "title": "Which vehicle brands have out-of-stock garages?",
+    "business_value": "Plan spare-parts availability improvements.",
+    "sql": "SELECT Brand_Specialization AS Vehicle_Brand, COUNT(*) AS garage_count, SUM(CASE WHEN Parts_Available = 0 THEN 1 ELSE 0 END) AS out_of_stock_count, ROUND(100.0 * AVG(CASE WHEN Parts_Available = 0 THEN 1.0 ELSE 0.0 END), 2) AS out_of_stock_pct FROM partner_garages GROUP BY Brand_Specialization HAVING out_of_stock_count > 0 ORDER BY out_of_stock_pct DESC;",
+    "status": "PASS",
+    "row_count": 8,
+    "columns": [
+      "Vehicle_Brand",
+      "garage_count",
+      "out_of_stock_count",
+      "out_of_stock_pct"
+    ],
+    "preview": [
+      {
+        "Vehicle_Brand": "Renault",
+        "garage_count": 5,
+        "out_of_stock_count": 3,
+        "out_of_stock_pct": 60.0
+      },
+      {
+        "Vehicle_Brand": "Skoda",
+        "garage_count": 4,
+        "out_of_stock_count": 2,
+        "out_of_stock_pct": 50.0
+      },
+      {
+        "Vehicle_Brand": "BMW",
+        "garage_count": 3,
+        "out_of_stock_count": 1,
+        "out_of_stock_pct": 33.33
+      },
+      {
+        "Vehicle_Brand": "Volkswagen",
+        "garage_count": 3,
+        "out_of_stock_count": 1,
+        "out_of_stock_pct": 33.33
+      },
+      {
+        "Vehicle_Brand": "Toyota",
+        "garage_count": 7,
+        "out_of_stock_count": 2,
+        "out_of_stock_pct": 28.57
+      },
+      {
+        "Vehicle_Brand": "Hyundai",
+        "garage_count": 20,
+        "out_of_stock_count": 5,
+        "out_of_stock_pct": 25.0
+      },
+      {
+        "Vehicle_Brand": "Honda",
+        "garage_count": 10,
+        "out_of_stock_count": 2,
+        "out_of_stock_pct": 20.0
+      },
+      {
+        "Vehicle_Brand": "Mahindra",
+        "garage_count": 8,
+        "out_of_stock_count": 1,
+        "out_of_stock_pct": 12.5
+      }
+    ]
+  },
+  {
+    "id": "Q38",
+    "category": "Garage coverage",
+    "title": "Is garage supply proportional to the claim mix by brand?",
+    "business_value": "Compare demand share with eligible garage supply share.",
+    "sql": "WITH demand AS (SELECT Vehicle_Brand, COUNT(*) AS claim_count FROM telematics_claims GROUP BY Vehicle_Brand), supply AS (SELECT Brand_Specialization AS Vehicle_Brand, SUM(CASE WHEN Parts_Available = 1 THEN 1 ELSE 0 END) AS eligible_garages FROM partner_garages GROUP BY Brand_Specialization), totals AS (SELECT SUM(claim_count) AS total_claims FROM demand), total_supply AS (SELECT SUM(eligible_garages) AS total_garages FROM supply) SELECT d.Vehicle_Brand, d.claim_count, s.eligible_garages, ROUND(100.0 * d.claim_count / t.total_claims, 2) AS demand_share_pct, ROUND(100.0 * s.eligible_garages / ts.total_garages, 2) AS eligible_supply_share_pct, ROUND(1.0 * d.claim_count / NULLIF(s.eligible_garages, 0), 2) AS claims_per_eligible_garage FROM demand d JOIN supply s ON d.Vehicle_Brand = s.Vehicle_Brand CROSS JOIN totals t CROSS JOIN total_supply ts ORDER BY claims_per_eligible_garage DESC;",
+    "status": "PASS",
+    "row_count": 12,
+    "columns": [
+      "Vehicle_Brand",
+      "claim_count",
+      "eligible_garages",
+      "demand_share_pct",
+      "eligible_supply_share_pct",
+      "claims_per_eligible_garage"
+    ],
+    "preview": [
+      {
+        "Vehicle_Brand": "Tata",
+        "claim_count": 421,
+        "eligible_garages": 7,
+        "demand_share_pct": 14.03,
+        "eligible_supply_share_pct": 8.43,
+        "claims_per_eligible_garage": 60.14
+      },
+      {
+        "Vehicle_Brand": "Mahindra",
+        "claim_count": 323,
+        "eligible_garages": 7,
+        "demand_share_pct": 10.77,
+        "eligible_supply_share_pct": 8.43,
+        "claims_per_eligible_garage": 46.14
+      },
+      {
+        "Vehicle_Brand": "Maruti Suzuki",
+        "claim_count": 804,
+        "eligible_garages": 20,
+        "demand_share_pct": 26.8,
+        "eligible_supply_share_pct": 24.1,
+        "claims_per_eligible_garage": 40.2
+      },
+      {
+        "Vehicle_Brand": "Renault",
+        "claim_count": 79,
+        "eligible_garages": 2,
+        "demand_share_pct": 2.63,
+        "eligible_supply_share_pct": 2.41,
+        "claims_per_eligible_garage": 39.5
+      },
+      {
+        "Vehicle_Brand": "Hyundai",
+        "claim_count": 588,
+        "eligible_garages": 15,
+        "demand_share_pct": 19.6,
+        "eligible_supply_share_pct": 18.07,
+        "claims_per_eligible_garage": 39.2
+      },
+      {
+        "Vehicle_Brand": "Volkswagen",
+        "claim_count": 71,
+        "eligible_garages": 2,
+        "demand_share_pct": 2.37,
+        "eligible_supply_share_pct": 2.41,
+        "claims_per_eligible_garage": 35.5
+      },
+      {
+        "Vehicle_Brand": "Honda",
+        "claim_count": 278,
+        "eligible_garages": 8,
+        "demand_share_pct": 9.27,
+        "eligible_supply_share_pct": 9.64,
+        "claims_per_eligible_garage": 34.75
+      },
+      {
+        "Vehicle_Brand": "Toyota",
+        "claim_count": 153,
+        "eligible_garages": 5,
+        "demand_share_pct": 5.1,
+        "eligible_supply_share_pct": 6.02,
+        "claims_per_eligible_garage": 30.6
+      }
+    ]
+  },
+  {
+    "id": "Q39",
+    "category": "Garage coverage",
+    "title": "Which brands have the fewest in-stock preferred garages?",
+    "business_value": "Locate potential preferred-network coverage gaps.",
+    "sql": "SELECT Brand_Specialization AS Vehicle_Brand, SUM(CASE WHEN Parts_Available = 1 AND Preferred_Partner = 1 THEN 1 ELSE 0 END) AS preferred_in_stock_garages, SUM(CASE WHEN Parts_Available = 1 THEN 1 ELSE 0 END) AS all_in_stock_garages FROM partner_garages GROUP BY Brand_Specialization ORDER BY preferred_in_stock_garages ASC, all_in_stock_garages ASC;",
+    "status": "PASS",
+    "row_count": 12,
+    "columns": [
+      "Vehicle_Brand",
+      "preferred_in_stock_garages",
+      "all_in_stock_garages"
+    ],
+    "preview": [
+      {
+        "Vehicle_Brand": "Skoda",
+        "preferred_in_stock_garages": 0,
+        "all_in_stock_garages": 2
+      },
+      {
+        "Vehicle_Brand": "Renault",
+        "preferred_in_stock_garages": 1,
+        "all_in_stock_garages": 2
+      },
+      {
+        "Vehicle_Brand": "BMW",
+        "preferred_in_stock_garages": 2,
+        "all_in_stock_garages": 2
+      },
+      {
+        "Vehicle_Brand": "Volkswagen",
+        "preferred_in_stock_garages": 2,
+        "all_in_stock_garages": 2
+      },
+      {
+        "Vehicle_Brand": "Mercedes-Benz",
+        "preferred_in_stock_garages": 2,
+        "all_in_stock_garages": 3
+      },
+      {
+        "Vehicle_Brand": "Kia",
+        "preferred_in_stock_garages": 4,
+        "all_in_stock_garages": 10
+      },
+      {
+        "Vehicle_Brand": "Toyota",
+        "preferred_in_stock_garages": 5,
+        "all_in_stock_garages": 5
+      },
+      {
+        "Vehicle_Brand": "Honda",
+        "preferred_in_stock_garages": 5,
+        "all_in_stock_garages": 8
+      }
+    ]
+  },
+  {
+    "id": "Q40",
+    "category": "Garage coverage",
+    "title": "What is the average capacity-to-turnaround profile by area?",
+    "business_value": "Compare network capacity with simulated repair duration.",
+    "sql": "SELECT Area, COUNT(*) AS garage_count, ROUND(AVG(Daily_Service_Capacity), 2) AS avg_daily_capacity, ROUND(AVG(Avg_Repair_Turnaround_Days), 2) AS avg_turnaround_days, ROUND(AVG(Daily_Service_Capacity / NULLIF(Avg_Repair_Turnaround_Days, 0)), 2) AS capacity_per_turnaround_day FROM partner_garages GROUP BY Area ORDER BY capacity_per_turnaround_day DESC;",
+    "status": "PASS",
+    "row_count": 5,
+    "columns": [
+      "Area",
+      "garage_count",
+      "avg_daily_capacity",
+      "avg_turnaround_days",
+      "capacity_per_turnaround_day"
+    ],
+    "preview": [
+      {
+        "Area": "Faridabad",
+        "garage_count": 7,
+        "avg_daily_capacity": 11.86,
+        "avg_turnaround_days": 2.9,
+        "capacity_per_turnaround_day": 12.69
+      },
+      {
+        "Area": "Gurugram",
+        "garage_count": 30,
+        "avg_daily_capacity": 17.1,
+        "avg_turnaround_days": 2.93,
+        "capacity_per_turnaround_day": 10.18
+      },
+      {
+        "Area": "Noida",
+        "garage_count": 22,
+        "avg_daily_capacity": 18.36,
+        "avg_turnaround_days": 3.1,
+        "capacity_per_turnaround_day": 9.42
+      },
+      {
+        "Area": "Delhi",
+        "garage_count": 32,
+        "avg_daily_capacity": 14.78,
+        "avg_turnaround_days": 2.93,
+        "capacity_per_turnaround_day": 9.0
+      },
+      {
+        "Area": "Ghaziabad",
+        "garage_count": 9,
+        "avg_daily_capacity": 15.56,
+        "avg_turnaround_days": 3.26,
+        "capacity_per_turnaround_day": 6.3
+      }
+    ]
+  },
+  {
+    "id": "Q41",
+    "category": "Routing operations",
+    "title": "How many routes used the preferred-partner fallback?",
+    "business_value": "Show whether routing had to relax the preferred-partner condition.",
+    "sql": "SELECT Preferred_Fallback_Used, COUNT(*) AS claim_count, ROUND(100.0 * COUNT(*) / (SELECT COUNT(*) FROM garage_routing), 2) AS share_pct FROM garage_routing GROUP BY Preferred_Fallback_Used;",
+    "status": "PASS",
+    "row_count": 2,
+    "columns": [
+      "Preferred_Fallback_Used",
+      "claim_count",
+      "share_pct"
+    ],
+    "preview": [
+      {
+        "Preferred_Fallback_Used": 0,
+        "claim_count": 2965,
+        "share_pct": 98.83
+      },
+      {
+        "Preferred_Fallback_Used": 1,
+        "claim_count": 35,
+        "share_pct": 1.17
+      }
+    ]
+  },
+  {
+    "id": "Q42",
+    "category": "Routing operations",
+    "title": "What are average route distance and cycle time by brand?",
+    "business_value": "Compare routing effort across vehicle makes.",
+    "sql": "SELECT Vehicle_Brand, COUNT(*) AS routed_claims, ROUND(AVG(Recommended_Garage_Distance_km), 2) AS avg_distance_km, ROUND(AVG(Recommended_Garage_Travel_Minutes), 1) AS avg_travel_minutes, ROUND(AVG(Recommended_Garage_Turnaround_Days), 2) AS avg_turnaround_days, ROUND(AVG(Recommended_Garage_Est_Cycle_Hours), 2) AS avg_estimated_cycle_hours FROM garage_routing GROUP BY Vehicle_Brand ORDER BY avg_estimated_cycle_hours DESC;",
+    "status": "PASS",
+    "row_count": 12,
+    "columns": [
+      "Vehicle_Brand",
+      "routed_claims",
+      "avg_distance_km",
+      "avg_travel_minutes",
+      "avg_turnaround_days",
+      "avg_estimated_cycle_hours"
+    ],
+    "preview": [
+      {
+        "Vehicle_Brand": "Renault",
+        "routed_claims": 79,
+        "avg_distance_km": 19.7,
+        "avg_travel_minutes": 47.3,
+        "avg_turnaround_days": 8.6,
+        "avg_estimated_cycle_hours": 207.19
+      },
+      {
+        "Vehicle_Brand": "Skoda",
+        "routed_claims": 35,
+        "avg_distance_km": 10.97,
+        "avg_travel_minutes": 26.3,
+        "avg_turnaround_days": 5.0,
+        "avg_estimated_cycle_hours": 120.44
+      },
+      {
+        "Vehicle_Brand": "Kia",
+        "routed_claims": 203,
+        "avg_distance_km": 6.31,
+        "avg_travel_minutes": 15.1,
+        "avg_turnaround_days": 3.14,
+        "avg_estimated_cycle_hours": 75.54
+      },
+      {
+        "Vehicle_Brand": "Tata",
+        "routed_claims": 421,
+        "avg_distance_km": 6.1,
+        "avg_travel_minutes": 14.6,
+        "avg_turnaround_days": 2.89,
+        "avg_estimated_cycle_hours": 69.55
+      },
+      {
+        "Vehicle_Brand": "Mahindra",
+        "routed_claims": 323,
+        "avg_distance_km": 6.93,
+        "avg_travel_minutes": 16.6,
+        "avg_turnaround_days": 2.6,
+        "avg_estimated_cycle_hours": 62.66
+      },
+      {
+        "Vehicle_Brand": "BMW",
+        "routed_claims": 23,
+        "avg_distance_km": 13.09,
+        "avg_travel_minutes": 31.4,
+        "avg_turnaround_days": 2.53,
+        "avg_estimated_cycle_hours": 61.36
+      },
+      {
+        "Vehicle_Brand": "Volkswagen",
+        "routed_claims": 71,
+        "avg_distance_km": 18.25,
+        "avg_travel_minutes": 43.8,
+        "avg_turnaround_days": 2.2,
+        "avg_estimated_cycle_hours": 53.6
+      },
+      {
+        "Vehicle_Brand": "Hyundai",
+        "routed_claims": 588,
+        "avg_distance_km": 5.19,
+        "avg_travel_minutes": 12.5,
+        "avg_turnaround_days": 2.02,
+        "avg_estimated_cycle_hours": 48.8
+      }
+    ]
+  },
+  {
+    "id": "Q43",
+    "category": "Routing operations",
+    "title": "Which garages receive the most routing recommendations?",
+    "business_value": "Show how the routing heuristic distributes simulated work.",
+    "sql": "SELECT r.Recommended_GarageID, g.Garage_Name, g.Area, g.Brand_Specialization, COUNT(*) AS recommended_claims, g.Daily_Service_Capacity, ROUND(1.0 * COUNT(*) / g.Daily_Service_Capacity, 2) AS claims_per_capacity_unit_proxy FROM garage_routing r JOIN partner_garages g ON r.Recommended_GarageID = g.GarageID GROUP BY r.Recommended_GarageID, g.Garage_Name, g.Area, g.Brand_Specialization, g.Daily_Service_Capacity ORDER BY recommended_claims DESC LIMIT 20;",
+    "status": "PASS",
+    "row_count": 20,
+    "columns": [
+      "Recommended_GarageID",
+      "Garage_Name",
+      "Area",
+      "Brand_Specialization",
+      "recommended_claims",
+      "Daily_Service_Capacity",
+      "claims_per_capacity_unit_proxy"
+    ],
+    "preview": [
+      {
+        "Recommended_GarageID": "GAR0075",
+        "Garage_Name": "Delhi Auto Service Centre 075",
+        "Area": "Delhi",
+        "Brand_Specialization": "Maruti Suzuki",
+        "recommended_claims": 303,
+        "Daily_Service_Capacity": 25,
+        "claims_per_capacity_unit_proxy": 12.12
+      },
+      {
+        "Recommended_GarageID": "GAR0065",
+        "Garage_Name": "Delhi Auto Service Centre 065",
+        "Area": "Delhi",
+        "Brand_Specialization": "Hyundai",
+        "recommended_claims": 206,
+        "Daily_Service_Capacity": 22,
+        "claims_per_capacity_unit_proxy": 9.36
+      },
+      {
+        "Recommended_GarageID": "GAR0079",
+        "Garage_Name": "Delhi Auto Service Centre 079",
+        "Area": "Delhi",
+        "Brand_Specialization": "Honda",
+        "recommended_claims": 199,
+        "Daily_Service_Capacity": 8,
+        "claims_per_capacity_unit_proxy": 24.88
+      },
+      {
+        "Recommended_GarageID": "GAR0061",
+        "Garage_Name": "Noida Auto Service Centre 061",
+        "Area": "Noida",
+        "Brand_Specialization": "Maruti Suzuki",
+        "recommended_claims": 176,
+        "Daily_Service_Capacity": 23,
+        "claims_per_capacity_unit_proxy": 7.65
+      },
+      {
+        "Recommended_GarageID": "GAR0097",
+        "Garage_Name": "Noida Auto Service Centre 097",
+        "Area": "Noida",
+        "Brand_Specialization": "Hyundai",
+        "recommended_claims": 171,
+        "Daily_Service_Capacity": 33,
+        "claims_per_capacity_unit_proxy": 5.18
+      },
+      {
+        "Recommended_GarageID": "GAR0032",
+        "Garage_Name": "Delhi Auto Service Centre 032",
+        "Area": "Delhi",
+        "Brand_Specialization": "Tata",
+        "recommended_claims": 149,
+        "Daily_Service_Capacity": 24,
+        "claims_per_capacity_unit_proxy": 6.21
+      },
+      {
+        "Recommended_GarageID": "GAR0057",
+        "Garage_Name": "Noida Auto Service Centre 057",
+        "Area": "Noida",
+        "Brand_Specialization": "Mahindra",
+        "recommended_claims": 132,
+        "Daily_Service_Capacity": 12,
+        "claims_per_capacity_unit_proxy": 11.0
+      },
+      {
+        "Recommended_GarageID": "GAR0099",
+        "Garage_Name": "Gurugram Auto Service Centre 099",
+        "Area": "Gurugram",
+        "Brand_Specialization": "Maruti Suzuki",
+        "recommended_claims": 131,
+        "Daily_Service_Capacity": 33,
+        "claims_per_capacity_unit_proxy": 3.97
+      }
+    ]
+  },
+  {
+    "id": "Q44",
+    "category": "Routing operations",
+    "title": "Which crash areas have the longest average garage route?",
+    "business_value": "Identify simulated geography with more travel burden.",
+    "sql": "SELECT Crash_Area, COUNT(*) AS routed_claims, ROUND(AVG(Recommended_Garage_Distance_km), 2) AS avg_distance_km, ROUND(MAX(Recommended_Garage_Distance_km), 2) AS max_distance_km, ROUND(AVG(Recommended_Garage_Travel_Minutes), 1) AS avg_travel_minutes FROM garage_routing GROUP BY Crash_Area ORDER BY avg_distance_km DESC;",
+    "status": "PASS",
+    "row_count": 5,
+    "columns": [
+      "Crash_Area",
+      "routed_claims",
+      "avg_distance_km",
+      "max_distance_km",
+      "avg_travel_minutes"
+    ],
+    "preview": [
+      {
+        "Crash_Area": "Ghaziabad",
+        "routed_claims": 285,
+        "avg_distance_km": 11.89,
+        "max_distance_km": 33.4,
+        "avg_travel_minutes": 28.5
+      },
+      {
+        "Crash_Area": "Faridabad",
+        "routed_claims": 270,
+        "avg_distance_km": 9.96,
+        "max_distance_km": 29.65,
+        "avg_travel_minutes": 23.9
+      },
+      {
+        "Crash_Area": "Gurugram",
+        "routed_claims": 655,
+        "avg_distance_km": 7.14,
+        "max_distance_km": 43.72,
+        "avg_travel_minutes": 17.1
+      },
+      {
+        "Crash_Area": "Noida",
+        "routed_claims": 587,
+        "avg_distance_km": 6.17,
+        "max_distance_km": 32.67,
+        "avg_travel_minutes": 14.8
+      },
+      {
+        "Crash_Area": "Delhi",
+        "routed_claims": 1203,
+        "avg_distance_km": 5.73,
+        "max_distance_km": 28.64,
+        "avg_travel_minutes": 13.8
+      }
+    ]
+  },
+  {
+    "id": "Q45",
+    "category": "Routing operations",
+    "title": "How often is the balanced recommendation farther than the nearest eligible garage?",
+    "business_value": "Quantify the distance-versus-turnaround/capacity trade-off.",
+    "sql": "SELECT COUNT(*) AS claims_routed, SUM(CASE WHEN Recommended_GarageID <> Nearest_Eligible_GarageID THEN 1 ELSE 0 END) AS recommendation_differs_from_nearest, ROUND(100.0 * AVG(CASE WHEN Recommended_GarageID <> Nearest_Eligible_GarageID THEN 1.0 ELSE 0.0 END), 2) AS changed_recommendation_pct, ROUND(AVG(Recommended_Garage_Distance_km - Nearest_Eligible_Garage_Distance_km), 3) AS avg_extra_distance_km FROM garage_routing;",
+    "status": "PASS",
+    "row_count": 1,
+    "columns": [
+      "claims_routed",
+      "recommendation_differs_from_nearest",
+      "changed_recommendation_pct",
+      "avg_extra_distance_km"
+    ],
+    "preview": [
+      {
+        "claims_routed": 3000,
+        "recommendation_differs_from_nearest": 1106,
+        "changed_recommendation_pct": 36.87,
+        "avg_extra_distance_km": 0.748
+      }
+    ]
+  },
+  {
+    "id": "Q46",
+    "category": "Routing operations",
+    "title": "How many claims are routed beyond 10 kilometres?",
+    "business_value": "Find longer-distance routing cases for manual review.",
+    "sql": "SELECT COUNT(*) AS claims_over_10km, ROUND(100.0 * COUNT(*) / (SELECT COUNT(*) FROM garage_routing), 2) AS share_pct, ROUND(AVG(Recommended_Garage_Distance_km), 2) AS avg_distance_over_10km FROM garage_routing WHERE Recommended_Garage_Distance_km > 10;",
+    "status": "PASS",
+    "row_count": 1,
+    "columns": [
+      "claims_over_10km",
+      "share_pct",
+      "avg_distance_over_10km"
+    ],
+    "preview": [
+      {
+        "claims_over_10km": 649,
+        "share_pct": 21.63,
+        "avg_distance_over_10km": 17.75
+      }
+    ]
+  },
+  {
+    "id": "Q47",
+    "category": "Routing operations",
+    "title": "What is routing distance by garage policy?",
+    "business_value": "Compare preferred-only routing with fallback scenarios.",
+    "sql": "SELECT Candidate_Policy, COUNT(*) AS claims, ROUND(AVG(Recommended_Garage_Distance_km), 2) AS avg_distance_km, ROUND(AVG(Recommended_Garage_Turnaround_Days), 2) AS avg_turnaround_days, ROUND(AVG(Recommended_Garage_Est_Cycle_Hours), 2) AS avg_cycle_hours FROM garage_routing GROUP BY Candidate_Policy ORDER BY claims DESC;",
+    "status": "PASS",
+    "row_count": 2,
+    "columns": [
+      "Candidate_Policy",
+      "claims",
+      "avg_distance_km",
+      "avg_turnaround_days",
+      "avg_cycle_hours"
+    ],
+    "preview": [
+      {
+        "Candidate_Policy": "Preferred partner + brand match + parts in stock",
+        "claims": 2965,
+        "avg_distance_km": 7.05,
+        "avg_turnaround_days": 2.12,
+        "avg_cycle_hours": 51.1
+      },
+      {
+        "Candidate_Policy": "Fallback: any brand-matched in-stock partner",
+        "claims": 35,
+        "avg_distance_km": 10.97,
+        "avg_turnaround_days": 5.0,
+        "avg_cycle_hours": 120.44
+      }
+    ]
+  },
+  {
+    "id": "Q48",
+    "category": "Routing operations",
+    "title": "Where are route recommendation counts concentrated?",
+    "business_value": "Examine routing allocations by area and garage specialization.",
+    "sql": "SELECT Crash_Area, Recommended_Garage_Area, COUNT(*) AS route_count, ROUND(AVG(Recommended_Garage_Distance_km), 2) AS avg_distance_km FROM garage_routing GROUP BY Crash_Area, Recommended_Garage_Area ORDER BY route_count DESC LIMIT 25;",
+    "status": "PASS",
+    "row_count": 20,
+    "columns": [
+      "Crash_Area",
+      "Recommended_Garage_Area",
+      "route_count",
+      "avg_distance_km"
+    ],
+    "preview": [
+      {
+        "Crash_Area": "Delhi",
+        "Recommended_Garage_Area": "Delhi",
+        "route_count": 1111,
+        "avg_distance_km": 4.87
+      },
+      {
+        "Crash_Area": "Gurugram",
+        "Recommended_Garage_Area": "Gurugram",
+        "route_count": 581,
+        "avg_distance_km": 4.4
+      },
+      {
+        "Crash_Area": "Noida",
+        "Recommended_Garage_Area": "Noida",
+        "route_count": 478,
+        "avg_distance_km": 3.83
+      },
+      {
+        "Crash_Area": "Ghaziabad",
+        "Recommended_Garage_Area": "Noida",
+        "route_count": 146,
+        "avg_distance_km": 14.44
+      },
+      {
+        "Crash_Area": "Faridabad",
+        "Recommended_Garage_Area": "Faridabad",
+        "route_count": 126,
+        "avg_distance_km": 3.26
+      },
+      {
+        "Crash_Area": "Faridabad",
+        "Recommended_Garage_Area": "Noida",
+        "route_count": 121,
+        "avg_distance_km": 14.04
+      },
+      {
+        "Crash_Area": "Ghaziabad",
+        "Recommended_Garage_Area": "Ghaziabad",
+        "route_count": 99,
+        "avg_distance_km": 4.09
+      },
+      {
+        "Crash_Area": "Delhi",
+        "Recommended_Garage_Area": "Noida",
+        "route_count": 76,
+        "avg_distance_km": 17.5
+      }
+    ]
+  },
+  {
+    "id": "Q49",
+    "category": "Repair model",
+    "title": "What is holdout prediction error by impact-speed band?",
+    "business_value": "Check where model performance varies with crash severity.",
+    "sql": "SELECT CASE WHEN Speed_At_Impact_kmh < 25 THEN 'Low (<25)' WHEN Speed_At_Impact_kmh < 50 THEN 'Moderate (25-49)' WHEN Speed_At_Impact_kmh < 80 THEN 'High (50-79)' ELSE 'Very high (80+)' END AS speed_band, COUNT(*) AS holdout_claims, ROUND(AVG(Absolute_Error_INR), 2) AS mae_inr, ROUND(AVG(Actual_Repair_Cost_INR), 2) AS avg_actual_cost_inr, ROUND(AVG(Predicted_Repair_Cost_INR), 2) AS avg_predicted_cost_inr FROM holdout_predictions GROUP BY speed_band ORDER BY speed_band;",
+    "status": "PASS",
+    "row_count": 4,
+    "columns": [
+      "speed_band",
+      "holdout_claims",
+      "mae_inr",
+      "avg_actual_cost_inr",
+      "avg_predicted_cost_inr"
+    ],
+    "preview": [
+      {
+        "speed_band": "High (50-79)",
+        "holdout_claims": 76,
+        "mae_inr": 9804.04,
+        "avg_actual_cost_inr": 33425.0,
+        "avg_predicted_cost_inr": 35470.83
+      },
+      {
+        "speed_band": "Low (<25)",
+        "holdout_claims": 337,
+        "mae_inr": 1409.35,
+        "avg_actual_cost_inr": 4812.76,
+        "avg_predicted_cost_inr": 4907.0
+      },
+      {
+        "speed_band": "Moderate (25-49)",
+        "holdout_claims": 160,
+        "mae_inr": 5064.15,
+        "avg_actual_cost_inr": 17205.63,
+        "avg_predicted_cost_inr": 17852.35
+      },
+      {
+        "speed_band": "Very high (80+)",
+        "holdout_claims": 27,
+        "mae_inr": 25184.04,
+        "avg_actual_cost_inr": 72411.11,
+        "avg_predicted_cost_inr": 85411.64
+      }
+    ]
+  },
+  {
+    "id": "Q50",
+    "category": "Repair model",
+    "title": "Which brands have the largest holdout prediction errors?",
+    "business_value": "Identify vehicle makes where repair-cost estimates need caution.",
+    "sql": "SELECT Vehicle_Brand, COUNT(*) AS holdout_claims, ROUND(AVG(Absolute_Error_INR), 2) AS mae_inr, ROUND(AVG(Actual_Repair_Cost_INR), 2) AS avg_actual_cost_inr, ROUND(AVG(Predicted_Repair_Cost_INR), 2) AS avg_predicted_cost_inr FROM holdout_predictions GROUP BY Vehicle_Brand HAVING COUNT(*) >= 5 ORDER BY mae_inr DESC;",
+    "status": "PASS",
+    "row_count": 9,
+    "columns": [
+      "Vehicle_Brand",
+      "holdout_claims",
+      "mae_inr",
+      "avg_actual_cost_inr",
+      "avg_predicted_cost_inr"
+    ],
+    "preview": [
+      {
+        "Vehicle_Brand": "Tata",
+        "holdout_claims": 88,
+        "mae_inr": 5560.37,
+        "avg_actual_cost_inr": 13669.32,
+        "avg_predicted_cost_inr": 16260.36
+      },
+      {
+        "Vehicle_Brand": "Maruti Suzuki",
+        "holdout_claims": 151,
+        "mae_inr": 4946.74,
+        "avg_actual_cost_inr": 13796.03,
+        "avg_predicted_cost_inr": 16555.56
+      },
+      {
+        "Vehicle_Brand": "Toyota",
+        "holdout_claims": 34,
+        "mae_inr": 4570.14,
+        "avg_actual_cost_inr": 17661.76,
+        "avg_predicted_cost_inr": 14214.47
+      },
+      {
+        "Vehicle_Brand": "Volkswagen",
+        "holdout_claims": 14,
+        "mae_inr": 4154.76,
+        "avg_actual_cost_inr": 21985.71,
+        "avg_predicted_cost_inr": 20932.39
+      },
+      {
+        "Vehicle_Brand": "Kia",
+        "holdout_claims": 42,
+        "mae_inr": 4114.54,
+        "avg_actual_cost_inr": 14490.48,
+        "avg_predicted_cost_inr": 12667.54
+      },
+      {
+        "Vehicle_Brand": "Hyundai",
+        "holdout_claims": 120,
+        "mae_inr": 4021.87,
+        "avg_actual_cost_inr": 14598.33,
+        "avg_predicted_cost_inr": 16444.81
+      },
+      {
+        "Vehicle_Brand": "Honda",
+        "holdout_claims": 58,
+        "mae_inr": 4016.48,
+        "avg_actual_cost_inr": 11931.03,
+        "avg_predicted_cost_inr": 12366.3
+      },
+      {
+        "Vehicle_Brand": "Mahindra",
+        "holdout_claims": 64,
+        "mae_inr": 3789.75,
+        "avg_actual_cost_inr": 16539.06,
+        "avg_predicted_cost_inr": 17013.95
+      }
+    ]
+  },
+  {
+    "id": "Q51",
+    "category": "Repair model",
+    "title": "What are the most poorly predicted holdout claims?",
+    "business_value": "Create examples for error analysis, not automatic claim denials.",
+    "sql": "SELECT ClaimID, AccidentDate, Vehicle_Brand, Speed_At_Impact_kmh, G_Force_Impact, Airbag_Deployed, Actual_Repair_Cost_INR, Predicted_Repair_Cost_INR, Absolute_Error_INR FROM holdout_predictions ORDER BY Absolute_Error_INR DESC LIMIT 20;",
+    "status": "PASS",
+    "row_count": 20,
+    "columns": [
+      "ClaimID",
+      "AccidentDate",
+      "Vehicle_Brand",
+      "Speed_At_Impact_kmh",
+      "G_Force_Impact",
+      "Airbag_Deployed",
+      "Actual_Repair_Cost_INR",
+      "Predicted_Repair_Cost_INR",
+      "Absolute_Error_INR"
+    ],
+    "preview": [
+      {
+        "ClaimID": "CLM0002451",
+        "AccidentDate": "2025-11-11 06:19:00",
+        "Vehicle_Brand": "Tata",
+        "Speed_At_Impact_kmh": 90.7,
+        "G_Force_Impact": 3.99,
+        "Airbag_Deployed": 0,
+        "Actual_Repair_Cost_INR": 22400,
+        "Predicted_Repair_Cost_INR": 110173.46,
+        "Absolute_Error_INR": 87773.46
+      },
+      {
+        "ClaimID": "CLM0002529",
+        "AccidentDate": "2025-11-19 17:51:00",
+        "Vehicle_Brand": "Maruti Suzuki",
+        "Speed_At_Impact_kmh": 126.8,
+        "G_Force_Impact": 6.5,
+        "Airbag_Deployed": 1,
+        "Actual_Repair_Cost_INR": 102600,
+        "Predicted_Repair_Cost_INR": 162353.56,
+        "Absolute_Error_INR": 59753.56
+      },
+      {
+        "ClaimID": "CLM0002943",
+        "AccidentDate": "2025-08-16 18:12:00",
+        "Vehicle_Brand": "Maruti Suzuki",
+        "Speed_At_Impact_kmh": 116.5,
+        "G_Force_Impact": 6.13,
+        "Airbag_Deployed": 1,
+        "Actual_Repair_Cost_INR": 80000,
+        "Predicted_Repair_Cost_INR": 134338.2,
+        "Absolute_Error_INR": 54338.2
+      },
+      {
+        "ClaimID": "CLM0000072",
+        "AccidentDate": "2025-06-10 07:53:00",
+        "Vehicle_Brand": "Maruti Suzuki",
+        "Speed_At_Impact_kmh": 96.0,
+        "G_Force_Impact": 4.54,
+        "Airbag_Deployed": 0,
+        "Actual_Repair_Cost_INR": 53800,
+        "Predicted_Repair_Cost_INR": 105720.18,
+        "Absolute_Error_INR": 51920.18
+      },
+      {
+        "ClaimID": "CLM0000435",
+        "AccidentDate": "2025-07-18 04:08:00",
+        "Vehicle_Brand": "Hyundai",
+        "Speed_At_Impact_kmh": 87.5,
+        "G_Force_Impact": 3.1,
+        "Airbag_Deployed": 1,
+        "Actual_Repair_Cost_INR": 76800,
+        "Predicted_Repair_Cost_INR": 124460.63,
+        "Absolute_Error_INR": 47660.63
+      },
+      {
+        "ClaimID": "CLM0000031",
+        "AccidentDate": "2025-10-02 07:43:00",
+        "Vehicle_Brand": "Tata",
+        "Speed_At_Impact_kmh": 85.4,
+        "G_Force_Impact": 3.75,
+        "Airbag_Deployed": 0,
+        "Actual_Repair_Cost_INR": 21600,
+        "Predicted_Repair_Cost_INR": 68081.56,
+        "Absolute_Error_INR": 46481.56
+      },
+      {
+        "ClaimID": "CLM0000618",
+        "AccidentDate": "2025-11-19 17:42:00",
+        "Vehicle_Brand": "Toyota",
+        "Speed_At_Impact_kmh": 86.6,
+        "G_Force_Impact": 3.87,
+        "Airbag_Deployed": 0,
+        "Actual_Repair_Cost_INR": 110000,
+        "Predicted_Repair_Cost_INR": 64061.0,
+        "Absolute_Error_INR": 45939.0
+      },
+      {
+        "ClaimID": "CLM0002763",
+        "AccidentDate": "2025-12-05 20:08:00",
+        "Vehicle_Brand": "Honda",
+        "Speed_At_Impact_kmh": 75.0,
+        "G_Force_Impact": 3.66,
+        "Airbag_Deployed": 1,
+        "Actual_Repair_Cost_INR": 45200,
+        "Predicted_Repair_Cost_INR": 85051.65,
+        "Absolute_Error_INR": 39851.65
+      }
+    ]
+  },
+  {
+    "id": "Q52",
+    "category": "Repair model",
+    "title": "Does prediction bias differ across vehicle makes?",
+    "business_value": "Inspect signed errors for systematic over- or underprediction.",
+    "sql": "SELECT Vehicle_Brand, COUNT(*) AS holdout_claims, ROUND(AVG(Signed_Error_INR), 2) AS mean_signed_error_inr, ROUND(AVG(Absolute_Error_INR), 2) AS mean_absolute_error_inr FROM holdout_predictions GROUP BY Vehicle_Brand HAVING COUNT(*) >= 5 ORDER BY ABS(AVG(Signed_Error_INR)) DESC;",
+    "status": "PASS",
+    "row_count": 9,
+    "columns": [
+      "Vehicle_Brand",
+      "holdout_claims",
+      "mean_signed_error_inr",
+      "mean_absolute_error_inr"
+    ],
+    "preview": [
+      {
+        "Vehicle_Brand": "Toyota",
+        "holdout_claims": 34,
+        "mean_signed_error_inr": -3447.3,
+        "mean_absolute_error_inr": 4570.14
+      },
+      {
+        "Vehicle_Brand": "Maruti Suzuki",
+        "holdout_claims": 151,
+        "mean_signed_error_inr": 2759.54,
+        "mean_absolute_error_inr": 4946.74
+      },
+      {
+        "Vehicle_Brand": "Tata",
+        "holdout_claims": 88,
+        "mean_signed_error_inr": 2591.04,
+        "mean_absolute_error_inr": 5560.37
+      },
+      {
+        "Vehicle_Brand": "Hyundai",
+        "holdout_claims": 120,
+        "mean_signed_error_inr": 1846.48,
+        "mean_absolute_error_inr": 4021.87
+      },
+      {
+        "Vehicle_Brand": "Kia",
+        "holdout_claims": 42,
+        "mean_signed_error_inr": -1822.94,
+        "mean_absolute_error_inr": 4114.54
+      },
+      {
+        "Vehicle_Brand": "Volkswagen",
+        "holdout_claims": 14,
+        "mean_signed_error_inr": -1053.32,
+        "mean_absolute_error_inr": 4154.76
+      },
+      {
+        "Vehicle_Brand": "Mahindra",
+        "holdout_claims": 64,
+        "mean_signed_error_inr": 474.88,
+        "mean_absolute_error_inr": 3789.75
+      },
+      {
+        "Vehicle_Brand": "Honda",
+        "holdout_claims": 58,
+        "mean_signed_error_inr": 435.27,
+        "mean_absolute_error_inr": 4016.48
+      }
+    ]
+  },
+  {
+    "id": "Q53",
+    "category": "Repair model",
+    "title": "How close are actual and predicted costs by impact point?",
+    "business_value": "Compare error patterns across collision zones.",
+    "sql": "SELECT Impact_Point, COUNT(*) AS holdout_claims, ROUND(AVG(Actual_Repair_Cost_INR), 2) AS avg_actual_cost_inr, ROUND(AVG(Predicted_Repair_Cost_INR), 2) AS avg_predicted_cost_inr, ROUND(AVG(Absolute_Error_INR), 2) AS mae_inr FROM holdout_predictions GROUP BY Impact_Point ORDER BY mae_inr DESC;",
+    "status": "PASS",
+    "row_count": 3,
+    "columns": [
+      "Impact_Point",
+      "holdout_claims",
+      "avg_actual_cost_inr",
+      "avg_predicted_cost_inr",
+      "mae_inr"
+    ],
+    "preview": [
+      {
+        "Impact_Point": "Front",
+        "holdout_claims": 280,
+        "avg_actual_cost_inr": 15832.86,
+        "avg_predicted_cost_inr": 16373.74,
+        "mae_inr": 4751.7
+      },
+      {
+        "Impact_Point": "Side",
+        "holdout_claims": 176,
+        "avg_actual_cost_inr": 15981.25,
+        "avg_predicted_cost_inr": 16762.79,
+        "mae_inr": 4598.92
+      },
+      {
+        "Impact_Point": "Rear",
+        "holdout_claims": 144,
+        "avg_actual_cost_inr": 11279.86,
+        "avg_predicted_cost_inr": 13729.39,
+        "mae_inr": 3961.14
+      }
+    ]
+  },
+  {
+    "id": "Q54",
+    "category": "Repair model",
+    "title": "How does model MAE compare to a training-period mean baseline by brand?",
+    "business_value": "Compare predictions relative to the mean cost in the training period.",
+    "sql": "SELECT Vehicle_Brand, COUNT(*) AS holdout_claims, ROUND(AVG(Absolute_Error_INR), 2) AS model_mae_inr, ROUND(AVG(ABS(Actual_Repair_Cost_INR - (SELECT AVG(Actual_Repair_Cost_INR) FROM telematics_claims WHERE AccidentDate < (SELECT MIN(AccidentDate) FROM holdout_predictions)))), 2) AS benchmark_mae_inr FROM holdout_predictions GROUP BY Vehicle_Brand HAVING COUNT(*) >= 5 ORDER BY model_mae_inr DESC;",
+    "status": "PASS",
+    "row_count": 9,
+    "columns": [
+      "Vehicle_Brand",
+      "holdout_claims",
+      "model_mae_inr",
+      "benchmark_mae_inr"
+    ],
+    "preview": [
+      {
+        "Vehicle_Brand": "Tata",
+        "holdout_claims": 88,
+        "model_mae_inr": 5560.37,
+        "benchmark_mae_inr": 14416.15
+      },
+      {
+        "Vehicle_Brand": "Maruti Suzuki",
+        "holdout_claims": 151,
+        "model_mae_inr": 4946.74,
+        "benchmark_mae_inr": 14778.74
+      },
+      {
+        "Vehicle_Brand": "Toyota",
+        "holdout_claims": 34,
+        "model_mae_inr": 4570.14,
+        "benchmark_mae_inr": 12826.3
+      },
+      {
+        "Vehicle_Brand": "Volkswagen",
+        "holdout_claims": 14,
+        "model_mae_inr": 4154.76,
+        "benchmark_mae_inr": 13183.73
+      },
+      {
+        "Vehicle_Brand": "Kia",
+        "holdout_claims": 42,
+        "model_mae_inr": 4114.54,
+        "benchmark_mae_inr": 15527.64
+      },
+      {
+        "Vehicle_Brand": "Hyundai",
+        "holdout_claims": 120,
+        "model_mae_inr": 4021.87,
+        "benchmark_mae_inr": 12975.04
+      },
+      {
+        "Vehicle_Brand": "Honda",
+        "holdout_claims": 58,
+        "model_mae_inr": 4016.48,
+        "benchmark_mae_inr": 14953.44
+      },
+      {
+        "Vehicle_Brand": "Mahindra",
+        "holdout_claims": 64,
+        "model_mae_inr": 3789.75,
+        "benchmark_mae_inr": 12918.4
+      }
+    ]
+  },
+  {
+    "id": "Q55",
+    "category": "Executive decisions",
+    "title": "Which brands combine high demand with low preferred in-stock coverage?",
+    "business_value": "Create a prioritized network improvement view.",
+    "sql": "WITH demand AS (SELECT Vehicle_Brand, COUNT(*) AS claim_count, AVG(Actual_Repair_Cost_INR) AS avg_cost FROM telematics_claims GROUP BY Vehicle_Brand), network AS (SELECT Brand_Specialization AS Vehicle_Brand, SUM(CASE WHEN Parts_Available = 1 AND Preferred_Partner = 1 THEN 1 ELSE 0 END) AS preferred_stock_garages, SUM(CASE WHEN Parts_Available = 1 THEN 1 ELSE 0 END) AS all_stock_garages FROM partner_garages GROUP BY Brand_Specialization) SELECT d.Vehicle_Brand, d.claim_count, ROUND(d.avg_cost, 2) AS avg_cost_inr, n.preferred_stock_garages, n.all_stock_garages, ROUND(1.0 * d.claim_count / NULLIF(n.preferred_stock_garages, 0), 2) AS claims_per_preferred_stock_garage FROM demand d JOIN network n ON d.Vehicle_Brand = n.Vehicle_Brand ORDER BY claims_per_preferred_stock_garage DESC;",
+    "status": "PASS",
+    "row_count": 12,
+    "columns": [
+      "Vehicle_Brand",
+      "claim_count",
+      "avg_cost_inr",
+      "preferred_stock_garages",
+      "all_stock_garages",
+      "claims_per_preferred_stock_garage"
+    ],
+    "preview": [
+      {
+        "Vehicle_Brand": "Renault",
+        "claim_count": 79,
+        "avg_cost_inr": 15472.15,
+        "preferred_stock_garages": 1,
+        "all_stock_garages": 2,
+        "claims_per_preferred_stock_garage": 79.0
+      },
+      {
+        "Vehicle_Brand": "Hyundai",
+        "claim_count": 588,
+        "avg_cost_inr": 18563.61,
+        "preferred_stock_garages": 9,
+        "all_stock_garages": 15,
+        "claims_per_preferred_stock_garage": 65.33
+      },
+      {
+        "Vehicle_Brand": "Tata",
+        "claim_count": 421,
+        "avg_cost_inr": 19952.49,
+        "preferred_stock_garages": 7,
+        "all_stock_garages": 7,
+        "claims_per_preferred_stock_garage": 60.14
+      },
+      {
+        "Vehicle_Brand": "Honda",
+        "claim_count": 278,
+        "avg_cost_inr": 15520.14,
+        "preferred_stock_garages": 5,
+        "all_stock_garages": 8,
+        "claims_per_preferred_stock_garage": 55.6
+      },
+      {
+        "Vehicle_Brand": "Mahindra",
+        "claim_count": 323,
+        "avg_cost_inr": 19768.11,
+        "preferred_stock_garages": 6,
+        "all_stock_garages": 7,
+        "claims_per_preferred_stock_garage": 53.83
+      },
+      {
+        "Vehicle_Brand": "Maruti Suzuki",
+        "claim_count": 804,
+        "avg_cost_inr": 13942.91,
+        "preferred_stock_garages": 15,
+        "all_stock_garages": 20,
+        "claims_per_preferred_stock_garage": 53.6
+      },
+      {
+        "Vehicle_Brand": "Kia",
+        "claim_count": 203,
+        "avg_cost_inr": 20340.39,
+        "preferred_stock_garages": 4,
+        "all_stock_garages": 10,
+        "claims_per_preferred_stock_garage": 50.75
+      },
+      {
+        "Vehicle_Brand": "Volkswagen",
+        "claim_count": 71,
+        "avg_cost_inr": 23945.07,
+        "preferred_stock_garages": 2,
+        "all_stock_garages": 2,
+        "claims_per_preferred_stock_garage": 35.5
+      }
+    ]
+  }
+]

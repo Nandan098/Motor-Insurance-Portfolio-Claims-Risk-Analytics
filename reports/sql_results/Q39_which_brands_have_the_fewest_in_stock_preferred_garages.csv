@@ -1,0 +1,13 @@
+Vehicle_Brand,preferred_in_stock_garages,all_in_stock_garages
+Skoda,0,2
+Renault,1,2
+BMW,2,2
+Volkswagen,2,2
+Mercedes-Benz,2,3
+Kia,4,10
+Toyota,5,5
+Honda,5,8
+Mahindra,6,7
+Tata,7,7
+Hyundai,9,15
+Maruti Suzuki,15,20

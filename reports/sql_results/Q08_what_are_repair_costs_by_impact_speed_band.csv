@@ -1,0 +1,5 @@
+speed_band,claim_count,avg_cost_inr,avg_g_force
+01 Low (<25),1654,4932.83,0.71
+02 Moderate (25-49),750,17160.0,1.5
+03 High (50-79),399,36715.79,2.48
+04 Very high (80+),197,91903.55,4.43

@@ -1,0 +1,13 @@
+Vehicle_Brand,garage_count,in_stock_pct,out_of_stock_garages
+Renault,5,40.0,3
+Skoda,4,50.0,2
+BMW,3,66.67,1
+Volkswagen,3,66.67,1
+Toyota,7,71.43,2
+Hyundai,20,75.0,5
+Honda,10,80.0,2
+Mahindra,8,87.5,1
+Kia,10,100.0,0
+Maruti Suzuki,20,100.0,0
+Mercedes-Benz,3,100.0,0
+Tata,7,100.0,0

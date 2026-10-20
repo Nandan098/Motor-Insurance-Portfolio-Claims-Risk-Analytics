@@ -1,0 +1,21 @@
+Recommended_GarageID,Garage_Name,Area,Brand_Specialization,recommended_claims,Daily_Service_Capacity,claims_per_capacity_unit_proxy
+GAR0075,Delhi Auto Service Centre 075,Delhi,Maruti Suzuki,303,25,12.12
+GAR0065,Delhi Auto Service Centre 065,Delhi,Hyundai,206,22,9.36
+GAR0079,Delhi Auto Service Centre 079,Delhi,Honda,199,8,24.88
+GAR0061,Noida Auto Service Centre 061,Noida,Maruti Suzuki,176,23,7.65
+GAR0097,Noida Auto Service Centre 097,Noida,Hyundai,171,33,5.18
+GAR0032,Delhi Auto Service Centre 032,Delhi,Tata,149,24,6.21
+GAR0057,Noida Auto Service Centre 057,Noida,Mahindra,132,12,11.0
+GAR0099,Gurugram Auto Service Centre 099,Gurugram,Maruti Suzuki,131,33,3.97
+GAR0038,Gurugram Auto Service Centre 038,Gurugram,Hyundai,113,24,4.71
+GAR0027,Gurugram Auto Service Centre 027,Gurugram,Tata,104,23,4.52
+GAR0064,Delhi Auto Service Centre 064,Delhi,Kia,86,11,7.82
+GAR0062,Noida Auto Service Centre 062,Noida,Tata,84,17,4.94
+GAR0031,Noida Auto Service Centre 031,Noida,Renault,79,15,5.27
+GAR0050,Delhi Auto Service Centre 050,Delhi,Mahindra,79,20,3.95
+GAR0026,Gurugram Auto Service Centre 026,Gurugram,Honda,73,13,5.62
+GAR0008,Gurugram Auto Service Centre 008,Gurugram,Mahindra,70,6,11.67
+GAR0054,Noida Auto Service Centre 054,Noida,Volkswagen,66,15,4.4
+GAR0001,Faridabad Auto Service Centre 001,Faridabad,Maruti Suzuki,64,12,5.33
+GAR0051,Ghaziabad Auto Service Centre 051,Ghaziabad,Maruti Suzuki,63,15,4.2
+GAR0013,Delhi Auto Service Centre 013,Delhi,Toyota,59,34,1.74
