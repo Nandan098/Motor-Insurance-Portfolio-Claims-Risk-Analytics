@@ -1,9 +1,5 @@
 # Auto Insurance Telematics & Garage Routing Optimization Engine
 
-**Portfolio project aligned to EXL Business Analyst – Analytics**
-
-> **Data status:** Every claim, driver/vehicle identifier, cost, telematics reading, coordinate, garage name, inventory flag and turnaround estimate in this repository is synthetic. The data is shaped to be realistic-style and uneven, but it is not actual insurer, policyholder, repair invoice, GPS or garage-network data. Model performance is measured on a simulated target only.
-
 ## 1. Business problem
 
 Auto insurers need to estimate repair severity early and route vehicles to suitable repair partners. This project demonstrates two connected decision-support capabilities:
