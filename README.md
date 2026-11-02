@@ -1,162 +1,161 @@
-# Auto Insurance Telematics & Garage Routing Optimization Engine
+# Motor Insurance Portfolio & Claims Risk Analytics
 
-## 1. Business problem
+An end-to-end analytics project that explores motor insurance policy-year data, measures portfolio claims experience, develops predictive models for claims risk and incurred costs, and presents business insights through SQL analysis and Power BI dashboards.
 
-Auto insurers need to estimate repair severity early and route vehicles to suitable repair partners. This project demonstrates two connected decision-support capabilities:
+## Project Overview
 
-1. **Repair-cost prediction:** estimate a repair cost from simulated crash severity, vehicle make/age, impact point and incident context.
-2. **Garage recommendation:** find brand-compatible garages with relevant parts in stock, calculate geographic distance, and rank eligible locations by a transparent heuristic involving distance, turnaround time and service capacity.
+Motor insurers need to understand how risk and claims costs vary across policyholders, vehicles, coverage types, and exposure periods. This project analyses policy-year records from 2022–2024 to examine those patterns and support data-driven portfolio monitoring.
 
-This is an analytics prototype, not a live claims-settlement or dispatch system.
+The work combines:
 
-## 2. What is included
+- **Data analysis and validation** using Python and Pandas.
+- **SQL-based portfolio analysis** using MySQL.
+- **Feature engineering and machine learning** for claims-risk and incurred-cost prediction.
+- **Business intelligence reporting** through a three-page Power BI dashboard.
 
-- 3,000 telematics claim records and 100 partner garage records, plus the reproducible synthetic dataset generator.
-- Reusable Python modules for data checks, feature engineering, chronological model evaluation, Haversine distance, garage routing, SQLite creation, SQL-answer generation and reporting.
-- A Random Forest regression model and metrics: MAE, RMSE, R², WAPE, plus a simple median baseline.
-- A chronological holdout file that is separate from the all-sample demonstration-scoring export.
-- **55 SQL business questions**, query answers, and a CSV output for each question.
-- SQLite database for immediate local querying and a MySQL 8 schema/query file for additional SQL practice.
-- Business-insights report, model report, charts, Power BI build guide, DAX examples, tests, interview guide and Excel deliverable.
+## Dataset at a Glance
 
-## 3. Folder structure
+| Attribute | Description |
+|---|---|
+| Records analysed | 354K+ policy-year records |
+| Variables | 47 |
+| Period covered | 2022–2024 |
+| Domain | Motor insurance |
+| Main data areas | Vehicle and driver characteristics, premiums, exposure, claim counts, and incurred losses |
+
+> **Dataset note:** The project uses a structured dataset for analytical demonstration. It is not live production data from an insurance company, and the findings should not be interpreted as actual insurer performance or used directly for underwriting decisions.
+
+## Business Objectives
+
+1. Understand claims experience across the motor insurance portfolio.
+2. Compare claim frequency and claim severity across relevant portfolio segments.
+3. Examine how exposure and coverage relate to incurred losses.
+4. Develop predictive models for claims risk and incurred-cost estimation.
+5. Communicate portfolio trends and risk segments through an interactive dashboard.
+
+## Tools & Technologies
+
+| Tool | Application |
+|---|---|
+| Python | Data preparation, exploratory analysis, feature engineering, and modelling |
+| Pandas | Data manipulation and aggregation |
+| Scikit-learn | Machine learning workflows and model evaluation |
+| MySQL | SQL analysis, joins, aggregations, and portfolio-level queries |
+| Power BI | Interactive reporting and visualisation |
+
+## Analytical Workflow
+
+### 1. Data validation and preparation
+
+- Reviewed the structure and data types of the policy-year records.
+- Checked data quality and consistency before analysis.
+- Prepared relevant variables for analysis and modelling.
+- Kept the modelling workflow aligned with the information available at the prediction point to reduce target leakage.
+
+### 2. Exploratory data analysis
+
+Analysed portfolio characteristics and claims outcomes across dimensions such as:
+
+- Vehicle and driver characteristics.
+- Premium and policy-related information.
+- Exposure period.
+- Claim counts and incurred losses.
+- Coverage-level performance and financial trends.
+
+### 3. SQL-based portfolio analytics
+
+Used SQL aggregations and analysis to derive key insurance metrics, including:
+
+| Metric | Interpretation |
+|---|---|
+| Claim frequency | How often claims occur relative to the relevant policy or exposure base |
+| Average claim severity | Average incurred cost per claim |
+| Exposure-adjusted loss | Loss viewed in relation to the period or amount of insurance exposure |
+| Coverage-level loss trends | How incurred losses vary across coverage segments |
+
+Metric definitions should be interpreted consistently with the exposure and claim fields available in the dataset.
+
+### 4. Feature engineering
+
+Created analytical measures from the policy, exposure, and claims information to support portfolio analysis. These included claim-frequency, average-severity, and exposure-adjusted loss measures.
+
+For predictive modelling, input variables were selected according to the prediction objective and the information that would be available at the time of prediction. Outcome fields such as the target-period claim count or incurred loss were treated as targets rather than predictors where applicable.
+
+### 5. Machine learning
+
+The project explored two predictive objectives:
+
+- **Claims-risk prediction:** identify policy records or portfolio segments with higher expected claims risk.
+- **Incurred-cost prediction:** estimate the financial amount associated with claims.
+
+The models were trained and evaluated using an appropriate train-test methodology. A chronological split was used so that earlier observations were used for training and later observations were reserved for holdout evaluation. Preprocessing and feature preparation were based on the training data to avoid information leakage.
+
+For incurred-cost regression, model performance was assessed using:
+
+- **MAE (Mean Absolute Error):** average absolute prediction error.
+- **RMSE (Root Mean Squared Error):** gives greater weight to larger errors.
+- **R²:** indicates how much variation in the target is explained by the model.
+
+Exact model names, hyperparameters, and final metric values should be added from the final training run rather than inferred from the project description.
+
+### 6. Power BI dashboard
+
+Created a three-page dashboard to explore:
+
+- Overall claims experience and portfolio trends.
+- Coverage-level loss patterns and financial comparisons.
+- Portfolio risk segments and supporting indicators.
+
+The dashboard is intended to help users move from aggregate portfolio results to more focused segment-level analysis.
+
+## Key Business Questions Explored
+
+- How does claims experience vary across vehicle, driver, and policy segments?
+- Which coverage segments contribute more to incurred losses?
+- How does exposure affect the interpretation of claims and loss metrics?
+- Which portfolio segments show relatively higher claims risk?
+- How accurately can incurred costs be estimated from available policy information?
+
+## Repository Structure
+
+The structure below is a suggested organisation. Adjust folder and file names to match the files included in your repository.
 
 ```text
-EXL_Auto_Insurance_Telematics_Optimization_Project/
+motor-insurance-portfolio-analytics/
+│
 ├── data/
-│   ├── raw/                         # Source synthetic CSVs
-│   ├── processed/                   # Canonical validated copies + SQLite DB
-│   └── auto_insurance_telematics_dataset.xlsx
-├── src/
-│   ├── generate_dataset.py           # Rebuild source data using fixed seed
-│   ├── data_validation.py            # Schema and quality checks
-│   ├── feature_engineering.py        # Leakage-aware feature creation
-│   ├── train_repair_cost_model.py    # Chronological holdout + final demo model
-│   ├── garage_routing.py             # Haversine and eligible-garage ranking
-│   ├── build_sqlite_database.py      # Materialize tables in SQLite
-│   ├── sql_catalog.py                # 55 documented SQL questions
-│   ├── run_sql_questions.py          # Execute queries and export result tables
-│   ├── insight_reports.py            # Business insight summaries and charts
-│   ├── export_excel_report.py        # Excel report built with artifact_tool
-│   └── run_pipeline.py               # End-to-end orchestration
-├── sql/                              # SQLite query bank + MySQL 8 schema and query bank
-├── tests/                            # Unit and data-invariant tests
-├── models/                            # Final model artifact
-├── outputs/                           # Predictions, garage routes, combined CSV and Excel
-├── reports/                           # Evaluations, SQL results, insights and run manifests
-├── visuals/                           # Data and model charts
-├── docs/                               # Data dictionary, architecture, Power BI and interview guides
-└── requirements.txt
+│   ├── raw/                  # Source project dataset (if permitted to distribute)
+│   └── processed/            # Cleaned and modelling-ready data
+│
+├── notebooks/                # EDA, feature engineering, and modelling notebooks
+├── sql/                      # MySQL queries for portfolio analysis
+├── src/                      # Reusable Python scripts
+├── dashboard/                # Power BI report (.pbix) or dashboard screenshots
+├── reports/                  # Evaluation outputs and supporting reports
+├── requirements.txt          # Python dependencies
+└── README.md
 ```
 
-## 4. Setup
+## Evaluation and Reporting
 
-Use Python 3.10+ (Python 3.11 is a sensible default). From the project root:
+The modelling workflow evaluates predictions against held-out observations. For incurred-cost regression, MAE, RMSE, and R² provide complementary views of prediction quality. Dashboard analysis adds business context by showing how claims and losses vary across portfolio segments.
 
-### Windows PowerShell
+No universal business impact or operational savings are claimed by this project. Model metrics describe performance on the project's holdout data and should not be treated as evidence of production performance.
 
-```powershell
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
-```
+## Limitations
 
-### macOS / Linux
+- Results depend on the coverage, quality, and definitions of the available policy-year variables.
+- Relationships observed in historical records do not establish causation.
+- Claims and incurred-cost predictions are decision-support estimates, not final underwriting or claims decisions.
+- Performance on a holdout dataset may differ from performance on new portfolios, geographies, products, or future periods.
+- Further validation, calibration, monitoring, and business review would be required before any operational deployment.
 
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
-```
+## Future Improvements
 
-## 5. Run the complete pipeline
+- Compare additional models using identical chronological validation periods.
+- Tune model hyperparameters and prediction thresholds using validation data.
+- Add explainability analysis to understand the contribution of key predictors.
+- Evaluate calibration and segment-level model performance.
+- Add monitoring for data drift and changes in claims patterns.
+- Validate the workflow on appropriately governed operational data before production use.
 
-From the project root, run:
-
-```bash
-python -m src.run_pipeline
-```
-
-The pipeline will:
-
-1. Load and validate both source CSV files.
-2. Save clean typed copies under `data/processed/`.
-3. Train the Random Forest regressor, using an 80/20 **chronological holdout**.
-4. Save test-set predictions and metrics that were not trained on those test rows.
-5. Fit a final demonstration model on all 3,000 records and generate an all-row scored CSV. Those all-row predictions are in-sample and **must not be used for reported model metrics**.
-6. Route each claim to an eligible garage and export the routing details.
-7. Create a local SQLite database containing claims, garages, routing, holdout predictions and all-row demo scores.
-8. Execute the 55 SQL questions and export separate result CSVs.
-9. Write insights, metrics, charts and the Excel reporting workbook.
-
-The workbook in `outputs/telematics_claims_optimized.xlsx` is included as a completed deliverable. Re-generating the workbook uses OpenAI's `artifact_tool` workbook package in the creation environment; if it is unavailable in another local Python environment, all CSV, SQLite and Markdown outputs can still be regenerated, and the shipped workbook remains available.
-
-## 6. Run unit tests
-
-```bash
-pytest -q
-```
-
-## 7. Key output files
-
-| File | Purpose |
-|---|---|
-| `outputs/telematics_claims_optimized.xlsx` | Executive report and claims/routing/reporting tabs |
-| `outputs/telematics_claims_optimized.csv` | Combined all-claim cost prediction demo + garage recommendation |
-| `outputs/garage_routing_recommendations.csv` | One route recommendation per claim, eligibility policy and distance/cycle estimates |
-| `outputs/holdout_repair_cost_predictions.csv` | Honest later-period test predictions and residuals |
-| `outputs/claims_cost_scored_demo.csv` | Prediction from a model fitted on all sample records; illustrative only |
-| `reports/model_evaluation.json` | Chronological holdout metrics and baseline comparison |
-| `reports/Business_Insights.md` | Numeric observations and action ideas, with simulation caveats |
-| `reports/SQL_Questions_and_Answers.md` | All 55 questions, executed SQL and result previews |
-| `reports/sql_results/` | One CSV of executed results per query |
-| `data/processed/auto_insurance_analytics.sqlite` | Local SQL database |
-| `models/repair_cost_random_forest.joblib` | Final all-data model artifact for demonstration scoring |
-
-## 8. SQL practice
-
-- Query bank: `sql/analytics_questions_sqlite.sql` (executed against the included SQLite DB).
-- MySQL 8 schema: `sql/mysql8_schema.sql`.
-- MySQL 8 query bank: `sql/analytics_questions_mysql8.sql`.
-- Import guidance: `docs/MYSQL_IMPORT_GUIDE.md`.
-- Answer guide: `reports/SQL_Questions_and_Answers.md`.
-
-Start by opening the SQLite file with DB Browser for SQLite, or use the Python `sqlite3` module. Questions cover claims mix, repair-cost severity, temporal patterns, vehicle repeats, cost outliers, parts/garage coverage, routing distance, model error, and network-capacity prioritization.
-
-## 9. Garage-routing policy
-
-- Candidate eligibility: `Brand_Specialization` matches the vehicle brand and `Parts_Available = true`.
-- Preferred policy: if any eligible preferred garage exists, score only those. If none exists, fallback to any brand-compatible in-stock garage and flag the fallback.
-- Haversine distance is the great-circle distance from crash coordinates to garage coordinates.
-- Approximate driving minutes use an explicit 25 km/h urban average speed assumption; this is **not live traffic or road distance**.
-- Balanced recommendation score: normalized distance (60%) + normalized turnaround days (30%) + inverse normalized capacity (10%). Lower is better. The nearest eligible garage is also retained to compare distance-only and balanced routing.
-
-## 10. Main model decisions
-
-- Target: `Actual_Repair_Cost_INR`.
-- Predictors: impact speed, G-force, airbag status, braking duration, model year / calculated vehicle age, accident hour/weekday/month, make, impact point, weather, road type and area.
-- Target is never included in features.
-- Training sample: earliest 80% of sorted records; test sample: latest 20% chronologically.
-- Evaluation: MAE, RMSE, R² and WAPE; baseline: training-period median cost.
-- Feature importance is descriptive, not causal.
-
-## 11. Interpretation and ethical use
-
-- Data is synthetic. It is intended to showcase analytical workflows and should be labeled that way in a resume or interview.
-- Target cost is simulated from known severity-related factors. Good evaluation scores are expected to reflect the generated formula, not real-world insurer generalization.
-- Garage coordinates, parts status, partner status, capacity and turnaround time are simulated. No route output should be used to dispatch a real vehicle.
-- Model estimates should support human review, not automatically approve, deny, or settle insurance claims.
-- A real deployment would require governed real claim invoices, calibration, uncertainty and fairness tests, data-privacy controls, actual traffic/repair-time data, business rules, and ongoing monitoring.
-
-## 12. Suggested build order for learning
-
-1. Review `docs/DATA_DICTIONARY.md` and `src/data_validation.py`.
-2. Run the pipeline once and open `reports/data_quality_report.json`.
-3. Read `reports/SQL_Questions_and_Answers.md`; run Q01–Q10 yourself.
-4. Study `src/feature_engineering.py` and `src/train_repair_cost_model.py`.
-5. Compare model metrics with the median baseline in `reports/Model_Evaluation.md`.
-6. Walk through `src/garage_routing.py` and manually recompute one Haversine distance.
-7. Review the business insights and then build the report pages using `docs/POWER_BI_GUIDE.md`.
-8. Prepare an interview explanation from `docs/INTERVIEW_GUIDE.md`.
